@@ -1,8 +1,9 @@
-package org.example;
+package org.example.session;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.User;
 
 import java.util.List;
 
