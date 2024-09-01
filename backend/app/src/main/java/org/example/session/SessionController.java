@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ProblemDetail;
-import org.springframework.web.ErrorResponse;
 
 public interface SessionController {
 
@@ -27,7 +26,25 @@ public interface SessionController {
     })
     void createNewSession(
             @RequestBody(description = "Data to create a new session", required = true,
-                    content = @Content(schema = @Schema(implementation = CreateNewSessionDto.class)))
-            CreateNewSessionDto dto
+                    content = @Content(schema = @Schema(implementation = SessionInfoDto.class)))
+            SessionInfoDto dto
     );
+
+    /**
+     * Закрывает сессию пользователя по chatId
+     *
+     * @param dto данные для создания сессии
+     */
+    @Operation(summary = "Closes selected session",
+            description = "Closes user session based on chatId")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Session closed successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    })
+    void closeSession(@RequestBody(description = "Data to close session", required = true,
+            content = @Content(schema = @Schema(implementation = SessionInfoDto.class)))
+                      SessionInfoDto dto);
 }

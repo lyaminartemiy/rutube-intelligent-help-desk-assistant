@@ -13,7 +13,13 @@ public class SessionControllerImpl implements SessionController {
 
     @Override
     @PostMapping
-    public void createNewSession(@RequestBody CreateNewSessionDto dto) {
+    public void createNewSession(@RequestBody SessionInfoDto dto) {
         // TODO: Implementation goes here
+    }
+
+    @Override
+    @PostMapping("/close")
+    public void closeSession(SessionInfoDto dto) {
+        // TODO: Impl goes here
     }
 }
