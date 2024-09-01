@@ -1,6 +1,5 @@
 import logging
 import subprocess
-from datetime import datetime
 
 from fastapi import FastAPI
 
@@ -15,10 +14,6 @@ app.include_router(router)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s]: %(message)s",
-    # handlers=[
-    #     logging.FileHandler(f"../logs/app_{str(datetime.today())}.log"),
-    #     logging.StreamHandler(),
-    # ],
 )
 
 logger = logging.getLogger(__name__)
