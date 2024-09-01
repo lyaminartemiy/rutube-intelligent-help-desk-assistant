@@ -1,4 +1,4 @@
-package org.example;
+package org.example.message;
 
 import jakarta.persistence.*;
 import lombok.*;

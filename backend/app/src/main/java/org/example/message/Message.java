@@ -1,9 +1,10 @@
-package org.example;
+package org.example.message;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.session.Session;
 
 import java.time.ZonedDateTime;
 
