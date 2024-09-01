@@ -1,0 +1,20 @@
+spring.profiles.group:
+  test-local:
+    - h2-local-database
+
+server.port: 8080
+
+spring.jpa.hibernate.ddl-auto: update
+
+debug: false
+logging:
+  level:
+    root: info
+
+---
+spring.config.activate.on-profile: h2-local-database
+spring.datasource:
+  username: sa
+  password:
+  url: jdbc:h2:mem:rutube_hack
+---
