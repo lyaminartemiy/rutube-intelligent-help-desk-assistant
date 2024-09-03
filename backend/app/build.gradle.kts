@@ -8,7 +8,10 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+    id("org.springframework.boot") version "3.2.5"
 }
+
+apply(plugin = "io.spring.dependency-management")
 
 repositories {
     // Use Maven Central for resolving dependencies.
