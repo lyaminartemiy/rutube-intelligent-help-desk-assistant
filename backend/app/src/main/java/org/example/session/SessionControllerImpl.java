@@ -11,15 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SessionControllerImpl implements SessionController {
 
+    private final SessionService sessionService;
+
     @Override
     @PostMapping
     public void createNewSession(@RequestBody SessionInfoDto dto) {
-        // TODO: Implementation goes here
+        sessionService.createNewSession(dto.chatId());
     }
 
     @Override
     @PostMapping("/close")
     public void closeSession(SessionInfoDto dto) {
-        // TODO: Impl goes here
+        sessionService.closeSession(dto.chatId());
     }
 }

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.tgbot;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

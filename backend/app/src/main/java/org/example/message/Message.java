@@ -26,7 +26,6 @@ public class Message {
     @JoinColumn(name = "session_id")
     Session session;
 
-    @Nullable
     String text; // его либо нет, либо пользак сам отправляет, либо текст расшифровывается из голосового сообщения
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")

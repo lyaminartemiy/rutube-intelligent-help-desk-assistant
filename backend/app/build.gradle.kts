@@ -26,7 +26,8 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("com.h2database:h2:2.3.232")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
+//    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.2")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")

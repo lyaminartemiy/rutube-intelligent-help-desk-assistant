@@ -37,7 +37,7 @@ public class User implements UserDetails {
 
     String username;
 
-    String password;
+    String encodedPassword;
 
     @ManyToMany
     List<Session> sessions;
@@ -45,6 +45,11 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.toString()));
+    }
+
+    @Override
+    public String getPassword() {
+        return encodedPassword;
     }
 
     @Override

@@ -1,6 +1,8 @@
 spring.profiles.group:
   test-local:
     - h2-local-database
+  prod:
+    - postgres-prod-database
 
 server.port: 8080
 
@@ -11,6 +13,11 @@ logging:
   level:
     root: info
 
+security:
+  jwt:
+    secretKey: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+    expirationTime: 360000000000
+
 ---
 spring.config.activate.on-profile: h2-local-database
 spring.datasource:
@@ -18,3 +25,10 @@ spring.datasource:
   password:
   url: jdbc:h2:mem:rutube_hack
 ---
+spring.config.activate.on-profile: postgres-prod-database
+spring:
+  datasource:
+    username: invexion
+    password: 9ou1PfX2eDBo
+    url: jdbc:postgresql://95.165.157.208:6541/invexion
+  jpa.properties.hibernate.default_schema: rutube_hack_2024

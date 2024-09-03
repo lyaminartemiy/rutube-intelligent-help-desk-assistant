@@ -11,9 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MessageControllerImpl implements MessageController {
 
+    private final MessageService messageService;
+
     @Override
     @PostMapping
     public void createNewMessage(@RequestBody CreateNewMessageDto dto) {
-        // TODO: Implementation goes here
+        messageService.createNewMessage(
+                dto.chatId(),
+                dto.text(),
+                dto.additionalContent(),
+                dto.createdAt()
+        );
     }
 }

@@ -1,13 +1,10 @@
-package org.example;
+package org.example.tgbot;
 
-import org.example.message.CreateNewMessageDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name = "telegramBotFeignClient", url = "")
+@FeignClient(name = "telegramBotFeignClient", url = "http://localhost:8080")
 public interface TelegramBotFeignClient {
 
     @PostMapping("/api/messages")
