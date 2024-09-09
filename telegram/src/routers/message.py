@@ -1,3 +1,4 @@
+import asyncio
 import fastapi
 from services.message import send_message_to_user
 
@@ -9,4 +10,4 @@ async def send_message(
     user_id: int,
     text: str,
 ):
-    return await send_message_to_user(user_id=user_id, text=text)
+    asyncio.create_task(send_message_to_user(user_id=user_id, text=text))
