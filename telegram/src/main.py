@@ -1,3 +1,5 @@
+import asyncio
+import uvicorn
 import logging
 import subprocess
 
@@ -6,7 +8,7 @@ from fastapi import FastAPI
 import services.bot.handlers
 from aiogram import executor
 from routers.message import router
-from services.bot.utils.launcher import dp
+from services.bot.utils.launcher import dp, bot
 
 app = FastAPI()
 app.include_router(router)
@@ -24,22 +26,22 @@ def run_telegram_bot():
     executor.start_polling(dp, skip_updates=False)
 
 
-if __name__ == "__main__":
-    # Run FastAPI Server
-    uvicorn_process = subprocess.Popen(
-        [
-            "uvicorn",
-            "main:app",
-            "--host",
-            "0.0.0.0",
-            "--port",
-            "8080",
-            "--log-level",
-            "info",
-        ]
+async def start_fastapi():
+    config = uvicorn.Config("main:app", host="0.0.0.0", port="8001", log_level="info")
+    server = uvicorn.Server(config)
+    await server.serve()
+
+
+async def start_bot():
+    await dp.start_polling()
+
+
+async def main():
+    await asyncio.gather(
+        start_fastapi(),
+        start_bot(),
     )
 
-    # Run Telegram Bot
-    run_telegram_bot()
 
-    uvicorn_process.wait()
+if __name__ == "__main__":
+    asyncio.run(main())
