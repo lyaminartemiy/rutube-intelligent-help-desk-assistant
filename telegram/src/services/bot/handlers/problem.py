@@ -22,6 +22,7 @@ async def handle_start_problem_message(message: types.Message):
 
 
 async def _start_problem_mode(message: types.Message):
+    print(f"INFO: user_id - {message.from_user.id}")
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(
         keyboard_phrase["restart_problem_message"],
