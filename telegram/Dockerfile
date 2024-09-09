@@ -29,7 +29,7 @@ COPY src /app/src
 # Set the working directory to src
 WORKDIR /app/src
 
-EXPOSE 8001
+EXPOSE 8000
 
 # Specify the command to run on container start
 CMD [ "python", "main.py" ]
