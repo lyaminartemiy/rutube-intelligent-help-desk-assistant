@@ -1,8 +1,11 @@
-import functools
-import requests
+from typing import Callable
+import aiohttp
 from aiogram import types
 from models.schemas import NewSession, NewMessage
 from config.config import EventStoreSettings
+
+
+event_store_settings = EventStoreSettings()
 
 
 def create_new_session(message: types.Message) -> NewSession:
@@ -20,37 +23,19 @@ def create_new_message(message: types.Message) -> NewMessage:
     return new_message
 
 
-def log_new_session(func):
-    @functools.wraps(func)
-    async def wrapper(message: types.Message, *args, **kwargs):
-        data = create_new_session(message).model_dump()
-        
-        # TODO: раскомментить для проверки отправки events
-        # requests.post(
-        #     EventStoreSettings.store_url,
-        #     data=data,
-        #     headers={"Content-Type": "application/json"},
-        # )
-        print(f"LOG_NEW_SESSION: {data}")
-        
-        await func(message, *args, **kwargs)
-    
-    return wrapper
+async def log_new_message(endpoint: str, message: dict):
+    data = create_new_message(message).model_dump()
+    print(f"INFO: data - {data}")
+    async with aiohttp.ClientSession() as session:
+        async with session.post(f"{event_store_settings.base_url}{endpoint}", json=data) as response:
+            if response.status != 200:
+                print(f"Ошибка отправки запроса: {response.status}")
 
 
-def log_new_message(func):
-    @functools.wraps(func)
-    async def wrapper(message: types.Message, *args, **kwargs):
-        data = create_new_message(message).model_dump()
-        
-        # TODO: раскомментить для проверки отправки events
-        # requests.post(
-        #     EventStoreSettings.store_url,
-        #     data=data,
-        #     headers={"Content-Type": "application/json"},
-        # )
-        print(f"LOG_NEW_MESSAGE: {data}")
-        
-        await func(message, *args, **kwargs)
-    
-    return wrapper
+async def log_new_session(endpoint: str, message: dict):
+    data = create_new_session(message).model_dump()
+    print(f"INFO: data - {data}")
+    async with aiohttp.ClientSession() as session:
+        async with session.post(f"{event_store_settings.base_url}{endpoint}", json=data) as response:
+            if response.status != 200:
+                print(f"Ошибка отправки запроса: {response.status}")
