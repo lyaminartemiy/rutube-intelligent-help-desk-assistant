@@ -30,5 +30,5 @@ spring:
   datasource:
     username: invexion
     password: 9ou1PfX2eDBo
-    url: jdbc:postgresql://95.165.157.208:6541/invexion
+    url: jdbc:postgresql://hack-psql:5432/invexion
   jpa.properties.hibernate.default_schema: rutube_hack_2024

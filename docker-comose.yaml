@@ -33,6 +33,18 @@ services:
       - TZ=Europe/Moscow
     restart: unless-stopped
 
+  hackaton-tgbot:
+    build: ./telegram
+    container_name: hackaton-tgbot
+    networks:
+      - hack_network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      - TZ=Europe/Moscow
+    restart: unless-stopped
+
 #  hackaton-ml:
 #    build: ./ml
 #    container_name: hackaton-ml
