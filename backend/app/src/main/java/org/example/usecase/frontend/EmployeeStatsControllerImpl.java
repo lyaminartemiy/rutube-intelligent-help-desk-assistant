@@ -1,5 +1,6 @@
 package org.example.usecase.frontend;
 
+import org.example.model.dto.EmployeeStats;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +12,19 @@ import java.time.ZonedDateTime;
 @RestController
 @RequestMapping("/api/employee-stats")
 public class EmployeeStatsControllerImpl implements EmployeeStatsController {
+
+    @Override
+    @GetMapping("/requests/summary")
+    public EmployeeStats getEmployeeStats(Principal principal) {
+        return new EmployeeStats(
+                getTotalRequestsHandledByEmployee(principal),
+                getInProgressRequestsCountByEmployee(principal),
+                getClosedRequestsCountTodayByEmployee(principal),
+                getClosedRequestsCountThisWeekByEmployee(principal),
+                getClosedRequestsCountThisMonthByEmployee(principal)
+        );
+    }
+
     @Override
     @GetMapping("/requests/handled/count")
     public Long getTotalRequestsHandledByEmployee(Principal principal) {
