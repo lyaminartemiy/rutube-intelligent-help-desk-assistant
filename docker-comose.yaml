@@ -36,6 +36,8 @@ services:
   hackaton-tgbot:
     build: ./telegram
     container_name: hackaton-tgbot
+    ports:
+      - "8002:8000"
     networks:
       - hack_network
     dns:
