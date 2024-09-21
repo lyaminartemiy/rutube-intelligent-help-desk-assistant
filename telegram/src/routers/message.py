@@ -1,13 +1,10 @@
-import asyncio
-import fastapi
+from aiohttp import web
 from services.message import send_message_to_user
 
-router = fastapi.APIRouter()
 
-
-@router.get("/api/send_message")
-async def send_message(
-    user_id: int,
-    text: str,
-):
-    asyncio.create_task(send_message_to_user(user_id=user_id, text=text))
+async def send_message(request):
+    chat_id = int(request.query.get("chat_id"))
+    text = request.query.get("text")
+    is_answer = request.query.get("is_answer", False)
+    await send_message_to_user(chat_id, text, is_answer)
+    return web.Response(text="Message sent")

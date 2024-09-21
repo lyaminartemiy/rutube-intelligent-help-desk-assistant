@@ -1,7 +1,9 @@
+from typing import Optional
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 
 class ProblemState(StatesGroup):
-    waiting_for_problem_description = State()
-    waiting_for_feedback = State()
-    feedback_received = State()
+    dislike_count: int = 0
+    last_message_id: Optional[int] = None
+    previous_message_id: Optional[int] = None
+    waiting_user_request = State()
