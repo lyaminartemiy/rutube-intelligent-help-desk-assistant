@@ -3,6 +3,7 @@ import aiohttp
 from aiogram import types
 from models.schemas import NewSession, NewMessage
 from config.config import EventStoreSettings
+from loguru import logger
 
 
 event_store_settings = EventStoreSettings()
@@ -25,17 +26,17 @@ def create_new_message(message: types.Message) -> NewMessage:
 
 async def log_new_message(endpoint: str, message: dict):
     data = create_new_message(message).model_dump()
-    print(f"INFO: data - {data}")
+    logger.info(f"INFO: data - {data}")
     async with aiohttp.ClientSession() as session:
         async with session.post(f"{event_store_settings.base_url}{endpoint}", json=data) as response:
             if response.status != 200:
-                print(f"Ошибка отправки запроса: {response.status}")
+                logger.info(f"Ошибка отправки запроса: {response.status}")
 
 
 async def log_new_session(endpoint: str, message: dict):
     data = create_new_session(message).model_dump()
-    print(f"INFO: data - {data}")
+    logger.info(f"INFO: data - {data}")
     async with aiohttp.ClientSession() as session:
         async with session.post(f"{event_store_settings.base_url}{endpoint}", json=data) as response:
             if response.status != 200:
-                print(f"Ошибка отправки запроса: {response.status}")
+                logger.info(f"Ошибка отправки запроса: {response.status}")

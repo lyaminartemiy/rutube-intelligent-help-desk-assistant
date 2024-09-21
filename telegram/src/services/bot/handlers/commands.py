@@ -1,24 +1,27 @@
 from aiogram import types
-from aiogram.types import ReplyKeyboardMarkup
 
-from services.bot.utils.launcher import dp
-from services.bot.keyboards.utils import keyboard_phrases as keyboard_phrase
-from services.bot.utils import phrases
+from aiogram.types import ReplyKeyboardMarkup
+from aiogram.dispatcher import FSMContext
+from services.bot.launcher import dp, bot
+from services.bot.utils.keyboards import Keyboard
+from services.bot.states.problem import ProblemState
+from services.bot.utils.phrases import Phrase
 
 
 @dp.message_handler(commands="start")
-@dp.message_handler(text=keyboard_phrase["back_start_message"])
-async def cmd_start(message: types.Message):
-    await _send_start_message(message)
-
-
-async def _send_start_message(message: types.Message):
+@dp.message_handler(commands="start", state=ProblemState.waiting_user_request)
+async def cmd_start(message: types.Message, state: FSMContext):
+    await state.finish()
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.row(keyboard_phrase["problem_message"], keyboard_phrase["faq_message"])
-
-    await message.answer(text=phrases.start_phrase, reply_markup=markup)
+    markup.row(Keyboard.NEW_REPORT)
+    await bot.send_message(
+        chat_id=message.from_user.id,
+        text=Phrase.START,
+        reply_markup=markup,
+    )
 
 
 @dp.message_handler(commands=["help"])
+@dp.message_handler(commands=["help"], state=ProblemState.waiting_user_request)
 async def cmd_help(message: types.Message):
-    await message.answer(text=phrases.help_text, parse_mode="Markdown")
+    await message.answer(text=Phrase.HELP, parse_mode="Markdown")
