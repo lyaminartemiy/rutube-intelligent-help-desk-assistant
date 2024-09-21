@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nullable;
 
+import java.time.ZonedDateTime;
+
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record SendMessageDto(
+public record UpdateMessageDto(
         String chatId,
-        @Nullable String text,
-        Boolean isAnswer
+        String text,
+        @Nullable ZonedDateTime createdAt,
+        @Nullable Boolean isHelpful
 ) {
 }
