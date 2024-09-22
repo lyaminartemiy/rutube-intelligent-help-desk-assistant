@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface SendMessageClient {
 
     @PostMapping("/send-message/bot")
-    ResponseEntity<SendMessageResponse> sendMessageFromBot(@RequestBody SendBotMessageDto requestBody);
+    SendMessageResponse sendMessageFromBot(@RequestBody SendBotMessageDto requestBody);
 
     @PostMapping("/send-message/dp")
     ResponseEntity<SendMessageResponse> sendMessageFromTechSupport(@RequestBody SendTechSupportMessageDto requestBody);

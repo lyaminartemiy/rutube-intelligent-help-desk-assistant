@@ -65,6 +65,7 @@ public class UpdateMessageService {
                         log.info("Мы попали в момент, когда питон присылает messageId для его установки в ботовское сообщение");
                         Message lastMessageInSession = messageRepository.findBySession(currentSession).getLast();
                         lastMessageInSession.setMessageId(messageId);
+                        System.out.println(lastMessageInSession.toString());
                     }
                 }
         );

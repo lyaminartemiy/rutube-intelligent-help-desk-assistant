@@ -1,6 +1,7 @@
 package org.example.usecase.telegram.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.dto.AiResponse;
 import org.example.model.dto.SendBotMessageDto;
 import org.example.model.dto.SendMessageResponse;
@@ -17,6 +18,7 @@ import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SendMessageService {
 
     private final SendMessageClient sendMessageClient;
@@ -25,14 +27,16 @@ public class SendMessageService {
             Session session,
             AiResponse aiResponse
     ) {
-            if (aiResponse.isQuestionAnswered()) {
+        log.info("Мы попали в момент, когда бэк отслыает соообщение бота в питон");
+        if (aiResponse.isQuestionAnswered()) {
                 SendMessageResponse sendMessageResponse = sendMessageClient.sendMessageFromBot(
                         new SendBotMessageDto(
                                 session.getChatId(),
                                 aiResponse.text(),
                                 true
                         )
-                ).getBody();
+                );
+            System.out.println(sendMessageResponse.toString());
 //                SendMessageResponse sendMessageResponse = new SendMessageResponse(
 //                        "12345",
 //                        "7891"
@@ -52,7 +56,7 @@ public class SendMessageService {
                                 null,
                                 false
                         )
-                ).getBody();
+                );
                 return Message.builder()
                         .messageId(sendMessageResponse.messageId())
                         .messageText("Не знаю")
