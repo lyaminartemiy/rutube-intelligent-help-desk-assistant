@@ -26,7 +26,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Employee {
+public final class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

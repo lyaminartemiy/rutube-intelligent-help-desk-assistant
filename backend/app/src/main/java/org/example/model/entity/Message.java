@@ -49,6 +49,8 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "session_id")
     Session session;
+    
+    String author;
 
     public enum Side {
         USER,

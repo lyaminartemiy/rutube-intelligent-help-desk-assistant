@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nullable;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record SendMessageDto(
+public record SendTechSupportMessageDto(
         String chatId,
         @Nullable String text,
-        Boolean isAnswer
+        Boolean isDone
 ) {
 }

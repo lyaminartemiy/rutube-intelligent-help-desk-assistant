@@ -1,0 +1,51 @@
+package org.example.usecase.telegram.impl;
+
+import lombok.RequiredArgsConstructor;
+import org.example.model.entity.Session;
+import org.example.model.entity.TechSupportRequest;
+import org.example.repository.SessionRepository;
+import org.example.repository.TechSupportRequestRepository;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
+@Service
+@RequiredArgsConstructor
+public class SessionService {
+
+    private final SessionRepository sessionRepository;
+    private final TechSupportRequestRepository techSupportRequestRepository;
+
+    public void createNewSession(String chatId) {
+        // Закрыть все предыдущие открытые сессии пользователя (должна быть всего одна)
+        sessionRepository.findByChatIdAndStatus(chatId, Session.Status.OPEN).forEach(session -> {
+            session.setClosedAt(ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+            session.setStatus(Session.Status.CLOSED);
+        });
+
+        // Открыть новую сессию и сохранить в бд
+        sessionRepository.save(
+                Session.builder()
+                        .chatId(chatId)
+                        .status(Session.Status.OPEN)
+                        .createdAt(ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC))
+                        .build()
+        );
+    }
+
+    public void sendSessionToTechSupport(String chatId) {
+        // Получить текущую сессию
+        Session currentOpenedSession = sessionRepository.findByChatIdAndStatus(chatId, Session.Status.OPEN).getFirst();
+
+        // Создать запрос в тех. поддержку
+        techSupportRequestRepository.save(
+                TechSupportRequest.builder()
+                        .title("Запрос в техподдержку") // TODO хотелось бы получить от ИИ
+                        .session(currentOpenedSession)
+                        .status(TechSupportRequest.Status.OPEN)
+                        .build()
+        );
+    }
+}

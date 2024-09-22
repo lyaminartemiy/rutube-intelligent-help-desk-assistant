@@ -1,5 +1,6 @@
 package org.example.model.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -41,6 +42,7 @@ public class Session {
     ZonedDateTime createdAt;
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @Nullable
     ZonedDateTime closedAt;
 
     public enum Status {
