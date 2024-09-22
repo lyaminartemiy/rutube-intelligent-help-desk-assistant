@@ -1,8 +1,8 @@
-from loguru import logger
 from typing import Union
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from services.bot.states.problem import ProblemState
+from services.bot.utils.events_logging import EventsLogger
 from services.bot.utils.phrases import Phrase
 
 
@@ -25,24 +25,22 @@ async def is_last_message(
     return last_message_id == message_id
 
 
-async def reset_dislike_count(message: types.CallbackQuery, state: FSMContext) -> None:
+async def reset_dislike_count(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     """Reset the dislike count to 0 if the message is the last message in the conversation."""
-    if await is_last_message(message, state):
+    if await is_last_message(callback_query, state):
         await state.update_data(dislike_count=0)
 
-    logger.info(
-        f"Dislike count from user: {message.from_user.id} message_id: {message.message.message_id}"
-    )
+    await EventsLogger.log_user_feedback(message=callback_query, is_positive=True)
 
 
-async def increment_dislike_count(
-    callback_query: types.CallbackQuery, state: FSMContext
-) -> None:
+async def increment_dislike_count(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     """Increment the dislike count if the message is the last message in the conversation."""
     data = await state.get_data()
     if await is_last_message(callback_query, state):
         dislike_count = data.get("dislike_count", 0) + 1
         await state.update_data(dislike_count=dislike_count)
+
+        await EventsLogger.log_user_feedback(message=callback_query, is_positive=False)
 
         if dislike_count >= 2:
             await callback_query.message.answer(
@@ -50,11 +48,5 @@ async def increment_dislike_count(
             )
             await state.finish()
             await ProblemState.waiting_dispatcher_response.set()
-            logger.info(
-                "Started waiting for dispatcher response for user: %s",
-                callback_query.from_user.id,
-            )
 
-        logger.info(
-            f"Dislike count from user: {callback_query.from_user.id} count: {dislike_count}"
-        )
+            await EventsLogger.log_new_dp_session(message=callback_query)

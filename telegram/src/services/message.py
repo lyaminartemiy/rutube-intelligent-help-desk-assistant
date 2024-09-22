@@ -6,12 +6,13 @@ from loguru import logger
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from services.bot.launcher import bot
+from services.bot.states.utils import EventsLogger
 from services.bot.states.problem import ProblemState
 from services.bot.utils.phrases import Phrase
 
 
 async def send_bot_message_to_user(
-    chat_id: int,
+    chat_id: str,
     text: str,
     is_answer: bool,
     state: FSMContext = ProblemState.waiting_user_request,
@@ -27,17 +28,18 @@ async def send_bot_message_to_user(
             ),
         )
         message = await bot.send_message(
-            chat_id=chat_id,
+            chat_id=int(chat_id),
             text=text,
             reply_markup=inline_keyboard,
         )
-        await state.update_data(last_message_id=message.message_id)
     else:
         message = await bot.send_message(
-            chat_id=chat_id,
+            chat_id=int(chat_id),
             text=Phrase.NO_REPONSE,
         )
-        await state.update_data(last_message_id=message.message_id)
+    
+    await state.update_data(last_message_id=message.message_id)
+    await EventsLogger.log_new_bot_message(message=message)
     logger.info(f"Sent message from bot to user: {chat_id} and text: {text}")
 
 
