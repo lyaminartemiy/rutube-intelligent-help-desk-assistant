@@ -124,9 +124,6 @@ public class AdminStatsService {
 
             currentDate = currentDate.plusDays(1);
         }
-
-        chartData.add(0, new AIProcessedRequestPercentageChart(0.0, startDate));
-
         return chartData;
     }
 
