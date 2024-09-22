@@ -23,6 +23,11 @@ RUN jlink \
 
 FROM alpine:latest
 
+ENV DB_PORT=5432
+LABEL author="Смольников " \
+      group="ИКБО-10-21"
+
+
 ARG JAR_FILE=app.jar
 RUN mkdir /java
 ENV JAVA_HOME /java
@@ -33,3 +38,5 @@ COPY --from=build /project/app/build/libs/$JAR_FILE /libs/
 COPY --from=build /project/app/build/resources /resources/
 
 CMD ["java", "-jar", "libs/app.jar", "--spring.profiles.active=prod"]
+
+ONBUILD RUN echo "Сборка и запуск произведены."
