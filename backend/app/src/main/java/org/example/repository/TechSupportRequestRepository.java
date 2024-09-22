@@ -2,9 +2,11 @@ package org.example.repository;
 
 import org.example.model.entity.TechSupportRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.time.ZonedDateTime;
 
+@Repository
 public interface TechSupportRequestRepository extends JpaRepository<TechSupportRequest, Long> {
     Long countByStatus(TechSupportRequest.Status status);
 
