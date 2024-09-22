@@ -10,16 +10,16 @@ from loguru import logger
 
 async def webserver_start():
     app = web.Application()
-    app.router.add_get("/api/send-message/bot", send_bot_message)
-    app.router.add_get("/api/send-message/dp", send_dispatcher_message)
+    app.router.add_post("/send-message/bot", send_bot_message)
+    app.router.add_post("/send-message/dp", send_dispatcher_message)
 
     runner = web.AppRunner(app)
     await runner.setup()
 
-    site = web.TCPSite(runner, "127.0.0.1", 8000)
+    site = web.TCPSite(runner, "0.0.0.0", 8000)
     await site.start()
 
-    logger.info("Web server started at http://127.0.0.1:8000")
+    logger.info("Web server started at http://0.0.0.0:8000")
 
 
 async def bot_start():

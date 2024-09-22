@@ -26,7 +26,7 @@ def _create_user_message_model(message: types.Message) -> schemas.UpdateMessageD
         chat_id=str(message.chat.id),
         message_id=str(message.message_id),
         text=message.text,
-        created_at=str(message.date.astimezone()),
+        created_at=str(message.date.astimezone().isoformat()),
         is_helpful=None,
     )
 
@@ -58,13 +58,36 @@ def _create_feedback_message(
     )
 
 
-async def _log_event(
+async def _log_event_with_params(
     data: Union[schemas.CreateSessionDTO, schemas.UpdateMessageDTO], endpoint: str
 ) -> None:
     """Log an event to the event store."""
     async with aiohttp.ClientSession() as session:
-        async with session.post(url=endpoint, params=clean_params(**data.model_dump())) as response:
+        async with session.post(
+            url=endpoint,
+            params={camel_case(key): value for key, value in clean_params(**data.model_dump()).items()},
+        ) as response:
+            if response.status != 200:
+                logger.error(f"Failed to log event with params: {data.model_dump()}")
+                logger.exception(response)
+
+
+async def _log_event_with_json(
+    data: Union[schemas.CreateSessionDTO, schemas.UpdateMessageDTO], endpoint: str
+) -> None:
+    """Log an event to the event store."""
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            url=endpoint,
+            json=clean_params(**data.model_dump()),
+        ) as response:
             response.raise_for_status()
+
+
+def camel_case(snake_str: str) -> str:
+    """Convert a snake case string to camel case."""
+    components = snake_str.split("_")
+    return components[0] + "".join(x.title() for x in components[1:])
 
 
 class EventsLogger:
@@ -76,7 +99,7 @@ class EventsLogger:
         new_session = _create_new_session_model(message)
         logger.info(f"Created new session for user: {message.from_user.id}")
         try:
-            await _log_event(
+            await _log_event_with_params(
                 new_session,
                 event_store_settings.BASE_URL
                 + event_store_settings.CREATE_BOT_SESSION_ENDPOINT,
@@ -91,7 +114,7 @@ class EventsLogger:
         new_session = _create_new_session_model(message)
         logger.info(f"Created new session for user: {message.from_user.id}")
         try:
-            await _log_event(
+            await _log_event_with_params(
                 new_session,
                 event_store_settings.BASE_URL
                 + event_store_settings.CREATE_DP_SESSION_ENDPOINT,
@@ -106,7 +129,7 @@ class EventsLogger:
         message_data = _create_user_message_model(message)
         logger.info(f"Logging new message from user: {message.from_user.id}")
         try:
-            await _log_event(
+            await _log_event_with_json(
                 message_data,
                 event_store_settings.BASE_URL + event_store_settings.MESSAGE_ENDPOINT,
             )
@@ -120,7 +143,7 @@ class EventsLogger:
         message_data = _create_bot_message_model(message)
         logger.info(f"Logging new message from bot to user: {message.from_user.id}")
         try:
-            await _log_event(
+            await _log_event_with_json(
                 message_data,
                 event_store_settings.BASE_URL + event_store_settings.MESSAGE_ENDPOINT,
             )
@@ -131,17 +154,17 @@ class EventsLogger:
             logger.exception(exc)
 
     @staticmethod
-    async def log_user_feedback(message: Union[types.Message, types.CallbackQuery], is_positive: bool) -> None:
+    async def log_user_feedback(callback_query: types.CallbackQuery, is_positive: bool) -> None:
         """Log a user's feedback to the event store."""
-        feedback_data = _create_feedback_message(message, is_positive)
+        feedback_data = _create_feedback_message(callback_query, is_positive)
         logger.info(
-            f"Logging feedback from user: {message.from_user.id} for message: {message.message_id}"
+            f"Logging feedback from user: {callback_query.from_user.id} for message: {callback_query.message.message_id}"
         )
         try:
-            await _log_event(
+            await _log_event_with_json(
                 feedback_data,
                 event_store_settings.BASE_URL + event_store_settings.MESSAGE_ENDPOINT,
             )
         except Exception as exc:
-            logger.error(f"Failed to log feedback from user: {message.from_user.id}")
+            logger.error(f"Failed to log feedback from user: {callback_query.from_user.id}")
             logger.exception(exc)

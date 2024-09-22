@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "sendMessageClient", url = "http://hackaton-tgbot:8002")
+@FeignClient(name = "sendMessageClient", url = "http://hackaton-tgbot:8000")
 public interface SendMessageClient {
 
     @PostMapping("/send-message/bot")

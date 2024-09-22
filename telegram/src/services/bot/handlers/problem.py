@@ -41,8 +41,8 @@ async def handle_problem_answer_from_ai(
 
 @dp.message_handler(state=ProblemState.waiting_dispatcher_response)
 async def handle_problem_answer_from_dispatcher(message: types.Message) -> None:
-    await EventsLogger.log_user_message(message=message)
-    # await send_dispather_message_to_user_mock(message=message)
+    # await EventsLogger.log_user_message(message=message)
+    await send_dispather_message_to_user_mock(message=message)
 
 
 @dp.callback_query_handler(
@@ -56,7 +56,7 @@ async def handle_positive_feedback(
         message_id=callback_query.message.message_id,
         reply_markup=None,
     )
-    await reset_dislike_count(message=callback_query, state=state)
+    await reset_dislike_count(callback_query=callback_query, state=state)
 
 
 @dp.callback_query_handler(
@@ -70,4 +70,4 @@ async def handle_negative_feedback(
         message_id=callback_query.message.message_id,
         reply_markup=None,
     )
-    await increment_dislike_count(callback_query, state)
+    await increment_dislike_count(callback_query=callback_query, state=state)
