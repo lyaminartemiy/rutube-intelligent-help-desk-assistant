@@ -1,15 +1,38 @@
+from typing import Optional
 from pydantic import (
     BaseModel,
-    StrictStr,
-    StrictInt,
 )
 
 
-class NewSession(BaseModel):
-    chat_id: StrictInt
+class CreateSessionDTO(BaseModel):
+    chat_id: str
 
 
-class NewMessage(BaseModel):
-    chat_id: StrictStr
-    text: StrictStr
-    created_at: StrictStr
+class UpdateMessageDTO(BaseModel):
+    chat_id: str
+    message_id: str
+    text: Optional[str]
+    created_at: Optional[str]
+    is_helpful: Optional[bool]
+
+
+class SendBotMessageDTO(BaseModel):
+    chat_id: str
+    text: Optional[str]
+    is_answer: bool
+
+
+class SendMessageFromBotResponse(BaseModel):
+    chat_id: str
+    message_id: str
+
+
+class SendTechSupportMessageDTO(BaseModel):
+    chat_id: str
+    text: Optional[str]
+    is_done: bool
+
+
+class SendMessageResponse(BaseModel):
+    chat_id: str
+    message_id: str

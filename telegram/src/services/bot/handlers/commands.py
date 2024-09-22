@@ -5,12 +5,14 @@ from aiogram.dispatcher import FSMContext
 from services.bot.launcher import dp, bot
 from services.bot.utils.keyboards import Keyboard
 from services.bot.states.problem import ProblemState
+from services.bot.states.utils import EventsLogger
 from services.bot.utils.phrases import Phrase
 
 
 @dp.message_handler(commands="start")
 @dp.message_handler(commands="start", state=ProblemState.waiting_user_request)
 async def cmd_start(message: types.Message, state: FSMContext):
+    await EventsLogger.log_new_bot_session(message=message)
     await state.finish()
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(Keyboard.NEW_REPORT)
