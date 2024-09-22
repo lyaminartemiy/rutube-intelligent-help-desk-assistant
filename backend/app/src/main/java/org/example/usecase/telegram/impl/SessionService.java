@@ -1,6 +1,7 @@
 package org.example.usecase.telegram.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.entity.Session;
 import org.example.model.entity.TechSupportRequest;
 import org.example.repository.SessionRepository;
@@ -13,6 +14,7 @@ import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SessionService {
 
     private final SessionRepository sessionRepository;
@@ -20,12 +22,14 @@ public class SessionService {
 
     public void createNewSession(String chatId) {
         // Закрыть все предыдущие открытые сессии пользователя (должна быть всего одна)
+        log.info("Закрыть все предыдущие открытые сессии пользователя (должна быть всего одна)");
         sessionRepository.findByChatIdAndStatus(chatId, Session.Status.OPEN).forEach(session -> {
             session.setClosedAt(ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
             session.setStatus(Session.Status.CLOSED);
         });
 
         // Открыть новую сессию и сохранить в бд
+        log.info("Открыть новую сессию и сохранить в бд");
         sessionRepository.save(
                 Session.builder()
                         .chatId(chatId)

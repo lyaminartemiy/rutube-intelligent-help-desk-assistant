@@ -33,9 +33,13 @@ public class SendMessageService {
                                 true
                         )
                 ).getBody();
+//                SendMessageResponse sendMessageResponse = new SendMessageResponse(
+//                        "12345",
+//                        "7891"
+//                );
                 return Message.builder()
                         .messageId(sendMessageResponse.messageId())
-                        .messageText(null)
+                        .messageText(aiResponse.text())
                         .createdAt(ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC))
                         .side(Message.Side.BOT)
                         .session(session)

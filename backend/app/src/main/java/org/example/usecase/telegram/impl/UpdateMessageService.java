@@ -31,27 +31,30 @@ public class UpdateMessageService {
     ) {
         messageRepository.findOneByMessageId(messageId).ifPresentOrElse(
                 message -> {
-                    message.setSession(sessionRepository.findOneByMessageId(messageId));
-                    message.setMessageId(messageId);
                     if (isHelpful != null) {
                         message.setIsHelpful(isHelpful);
                     }
                 },
                 () -> {
                     Session currentSession = sessionRepository.findByChatIdAndStatus(chatId, Session.Status.OPEN).getFirst();
-                    Message userMessageToAnswer = messageRepository.save(
-                            Message.builder()
-                                    .messageId(messageId)
-                                    .messageText(text)
-                                    .createdAt(createdAt)
-                                    .side(Message.Side.USER)
-                                    .session(currentSession)
-                                    .author("Пользователь")
-                                    .build()
-                    );
+                    if (text != null) {
+                        Message userMessageToAnswer = messageRepository.save(
+                                Message.builder()
+                                        .messageId(messageId)
+                                        .messageText(text)
+                                        .createdAt(createdAt)
+                                        .side(Message.Side.USER)
+                                        .session(currentSession)
+                                        .author("Пользователь")
+                                        .build()
+                        );
 
-                    AiResponse aiResponse = aiService.getAnswerFromAi(currentSession, userMessageToAnswer);
-                    messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
+                        AiResponse aiResponse = aiService.getAnswerFromAi(currentSession, userMessageToAnswer);
+                        messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
+                    } else {
+                        Message lastMessageInSession = messageRepository.findBySession(currentSession).getLast();
+                        lastMessageInSession.setMessageId(messageId);
+                    }
                 }
         );
     }
