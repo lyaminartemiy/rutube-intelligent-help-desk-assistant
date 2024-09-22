@@ -92,4 +92,43 @@ public class AdminStatsService {
         return chartData;
     }
 
+    public List<AIProcessedRequestPercentageChart> getAIProcessedRequestPercentageChart() {
+        List<Session> handledByAi = sessionRepository.findAllByStatusAndRequestNull(Session.Status.CLOSED);
+        List<Session> all = sessionRepository.findAllByStatus(Session.Status.CLOSED);
+
+        ZonedDateTime startDate = handledByAi.stream()
+                .map(Session::getCreatedAt)
+                .min(ZonedDateTime::compareTo)
+                .orElse(ZonedDateTime.now());
+
+        Map<ZonedDateTime, Long> handledByAiCount = handledByAi.stream()
+                .collect(Collectors.groupingBy(session -> session.getCreatedAt().truncatedTo(ChronoUnit.DAYS), Collectors.counting()));
+
+        Map<ZonedDateTime, Long> allCount = all.stream()
+                .collect(Collectors.groupingBy(session -> session.getCreatedAt().truncatedTo(ChronoUnit.DAYS), Collectors.counting()));
+
+        List<AIProcessedRequestPercentageChart> chartData = new ArrayList<>();
+
+        long totalHandledByAi = 0;
+        long totalSessions = 0;
+
+        ZonedDateTime currentDate = startDate;
+        while (!currentDate.isAfter(ZonedDateTime.now())) {
+            totalHandledByAi += handledByAiCount.getOrDefault(currentDate, 0L);
+            totalSessions += allCount.getOrDefault(currentDate, 0L);
+
+            double percentage = totalSessions > 0 ? (double) totalHandledByAi / totalSessions * 100 : 0.0;
+
+            AIProcessedRequestPercentageChart data = new AIProcessedRequestPercentageChart(percentage, currentDate);
+            chartData.add(data);
+
+            currentDate = currentDate.plusDays(1);
+        }
+
+        chartData.add(0, new AIProcessedRequestPercentageChart(0.0, startDate));
+
+        return chartData;
+    }
+
+
 }

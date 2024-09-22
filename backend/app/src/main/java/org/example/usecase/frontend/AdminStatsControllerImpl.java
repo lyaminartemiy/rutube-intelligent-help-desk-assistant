@@ -88,6 +88,6 @@ public class AdminStatsControllerImpl implements AdminStatsController {
     @Override
     @GetMapping("/chart/ai-processed-request-percentage")
     public List<AIProcessedRequestPercentageChart> getAIProcessedRequestPercentageChart() {
-        throw new RuntimeException("See other endpoint");
+        return adminStatsService.getAIProcessedRequestPercentageChart();
     }
 }
