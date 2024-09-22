@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class EventStoreSettings(BaseSettings):
-    base_url: str = "http://hackaton-backend:8080"
-    message_endpoint: str = "/api/messages"  # Message sending
-    create_session_endpoint: str = "/api/sessions"  # Session creation
-    close_session_endpoint: str = "/api/sessions/close"  # Session close
+    BASE_URL: str = "http://hackaton-backend:8080"
+    MESSAGE_ENDPOINT: str = "/api/messages"  # Message Sending
+    CREATE_BOT_SESSION_ENDPOINT: str = "/api/sessions/bot"  # Bot Session Creation
+    CREATE_DP_SESSION_ENDPOINT: str = "/api/sessions/dp"  # Dispatcher Session Creation
