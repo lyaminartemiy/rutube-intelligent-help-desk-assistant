@@ -32,10 +32,10 @@ dependencies {
 //    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.2")
 
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("io.jsonwebtoken:jjwt-api:0.12.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
+//    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("io.jsonwebtoken:jjwt-api:0.12.5")
+//    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
+//    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
 
     implementation("org.projectlombok:lombok:1.18.28")
     compileOnly("org.projectlombok:lombok:1.18.32")

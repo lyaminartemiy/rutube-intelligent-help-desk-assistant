@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UpdateMessageDto(
         String chatId,
+        String messageId,
         String text,
         @Nullable ZonedDateTime createdAt,
         @Nullable Boolean isHelpful
