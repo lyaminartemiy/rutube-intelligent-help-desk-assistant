@@ -46,7 +46,7 @@ public class UpdateMessageService {
                 },
                 () -> {
                     Session currentSession = sessionRepository.findByChatIdAndStatus(chatId, Session.Status.OPEN).getFirst();
-                    if (text != null) {
+                    if (text != null && !text.isEmpty()) {
                         log.info("Мы попали в момент, когда питон присылает сообщение пользователя");
                         Message userMessageToAnswer = messageRepository.save(
                                 Message.builder()
