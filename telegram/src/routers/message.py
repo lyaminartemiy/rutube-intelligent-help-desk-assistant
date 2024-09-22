@@ -12,8 +12,8 @@ async def send_bot_message(request: web.Request) -> web.Response:
 
     logger.info(f"[INFO]: Received message from bot to user: {chat_id} and text: {text}")
 
-    await send_bot_message_to_user(chat_id, text, is_answer)
-    return web.Response()
+    model = await send_bot_message_to_user(chat_id, text, is_answer)
+    return web.Response(body=model.model_dump_json(), content_type="application/json")
 
 
 async def send_dispatcher_message(request: web.Request) -> web.Response:

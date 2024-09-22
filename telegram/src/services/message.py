@@ -9,13 +9,14 @@ from services.bot.launcher import dp, bot
 from services.bot.states.utils import EventsLogger
 from services.bot.states.problem import ProblemState
 from services.bot.utils.phrases import Phrase
+from models import schemas
 
 
 async def send_bot_message_to_user(
     chat_id: str,
     text: str,
     is_answer: bool,
-) -> None:
+) -> schemas.UpdateMessageDTO:
     if is_answer:
         inline_keyboard = types.InlineKeyboardMarkup(row_width=2)
         inline_keyboard.add(
@@ -26,24 +27,30 @@ async def send_bot_message_to_user(
                 text=Phrase.NEGATIVE_FEEDBACK, callback_data="negative_feedback"
             ),
         )
+        logger.info(f"[INFO]: ОТПРАВЛЯЕМ СООБЩЕНИЕ ИЗ БОТА")
         message = await bot.send_message(
             chat_id=int(chat_id),
             text=text,
             reply_markup=inline_keyboard,
         )
+        logger.info(f"[INFO]: БОТ ОТППРАВИЛ MESSAGE_ID: {message.message_id}")
     else:
         message = await bot.send_message(
             chat_id=int(chat_id),
             text=Phrase.NO_REPONSE,
         )
 
-    @dp.message_handler(state=ProblemState.waiting_user_request)
-    async def update_last_message_id(state: FSMContext) -> None:
-        logger.info("[INFO]: Updating last message id")
-        await state.update_data(last_message_id=message.message_id)
-
-    await EventsLogger.log_new_bot_message(message=message)
     logger.info(f"[INFO]: Sent message from bot to user: {chat_id} with text: {text}")
+    # state = dp.current_state(chat=int(chat_id), user=int(chat_id))
+    # await state.update_data(last_message_id=message.message_id)
+    # await EventsLogger.log_new_bot_message(message=message)
+    return schemas.UpdateMessageDTO(
+        chat_id=str(message.chat.id),
+        message_id=str(message.message_id),
+        text=None,
+        created_at=None,
+        is_helpful=None,
+    )
 
 
 async def send_dispatcher_message_to_user(

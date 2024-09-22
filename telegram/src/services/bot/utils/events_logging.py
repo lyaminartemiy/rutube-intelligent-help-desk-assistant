@@ -1,3 +1,4 @@
+import asyncio
 from typing import Union, Dict, Any
 
 import aiohttp
@@ -33,6 +34,7 @@ def _create_user_message_model(message: types.Message) -> schemas.UpdateMessageD
 
 def _create_bot_message_model(message: types.Message) -> schemas.UpdateMessageDTO:
     """Create a bot message model."""
+    print("[INFO]: MESSAGE_ID: ", message.message_id)
     return schemas.UpdateMessageDTO(
         chat_id=str(message.chat.id),
         message_id=str(message.message_id),
@@ -76,12 +78,17 @@ async def _log_event_with_json(
     data: Union[schemas.CreateSessionDTO, schemas.UpdateMessageDTO], endpoint: str
 ) -> None:
     """Log an event to the event store."""
+    message_data = clean_params(**data.model_dump())
+    print("message_data:", message_data)
     async with aiohttp.ClientSession() as session:
+        print("МЫ В СЕССИИ!")
         async with session.post(
             url=endpoint,
-            json=clean_params(**data.model_dump()),
+            json=message_data,
+            headers={"Content-Type": "application/json"},
         ) as response:
-            response.raise_for_status()
+            print(response.status)
+            pass
 
 
 def camel_case(snake_str: str) -> str:
@@ -141,6 +148,7 @@ class EventsLogger:
     async def log_new_bot_message(message: types.Message) -> None:
         """Log a new bot message to the event store."""
         message_data = _create_bot_message_model(message)
+        print("пытаемся отправить данные для сохранения ботовского смс:", message_data.model_dump())
         logger.info(f"Logging new message from bot to user: {message.from_user.id}")
         try:
             await _log_event_with_json(
@@ -148,7 +156,7 @@ class EventsLogger:
                 event_store_settings.BASE_URL + event_store_settings.MESSAGE_ENDPOINT,
             )
         except Exception as exc:
-            logger.error(
+            logger.info(
                 f"Failed to log new message from bot to user: {message.from_user.id}"
             )
             logger.exception(exc)
