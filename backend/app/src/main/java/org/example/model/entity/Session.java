@@ -1,13 +1,6 @@
 package org.example.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +35,9 @@ public class Session {
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     ZonedDateTime closedAt;
+
+    @OneToOne
+    TechSupportRequest request;
 
     public enum Status {
         OPEN,

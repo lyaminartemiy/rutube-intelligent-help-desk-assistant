@@ -43,6 +43,8 @@ public class Employee {
 
     String email;
 
+    Boolean online;
+
     @ManyToMany
     List<TechSupportRequest> requestsInProgress;
 
