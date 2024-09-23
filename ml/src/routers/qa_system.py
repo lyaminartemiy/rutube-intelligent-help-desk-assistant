@@ -15,7 +15,7 @@ from models.schemas import QASystemDTO
 router = fastapi.APIRouter()
 
 
-@router.get("/api/qa")
+@router.post("/api/qa")
 async def get_qa(
     session: List[QASystemDTO],
     prompt_template: ChatPromptTemplate = Depends(lifespan.get_prompt_template),
@@ -38,3 +38,7 @@ async def get_qa(
         "text": qa_response,
         "is_answer": qa_response != "Я не знаю.",
     }
+    # return {
+    #     "text": "УРАААА",
+    #     "is_answer": True,
+    # }
