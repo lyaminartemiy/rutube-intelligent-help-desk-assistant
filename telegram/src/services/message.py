@@ -17,9 +17,20 @@ async def send_bot_message_to_user(
     text: str,
     is_answer: bool,
 ) -> schemas.UpdateMessageDTO:
+    """
+    Send a message to a user from the bot.
+
+    Args:
+        chat_id (str): The chat ID to send the message to.
+        text (str): The text of the message.
+        is_answer (bool): Whether the message is an answer to a user's question.
+
+    Returns:
+        schemas.UpdateMessageDTO: The message model.
+    """
     if is_answer:
-        inline_keyboard = types.InlineKeyboardMarkup(row_width=2)
-        inline_keyboard.add(
+        keyboard = types.InlineKeyboardMarkup(row_width=2)
+        keyboard.add(
             types.InlineKeyboardButton(
                 text=Phrase.POSITIVE_FEEDBACK, callback_data="positive_feedback"
             ),
@@ -27,23 +38,20 @@ async def send_bot_message_to_user(
                 text=Phrase.NEGATIVE_FEEDBACK, callback_data="negative_feedback"
             ),
         )
-        logger.info(f"[INFO]: ОТПРАВЛЯЕМ СООБЩЕНИЕ ИЗ БОТА")
         message = await bot.send_message(
             chat_id=int(chat_id),
             text=text,
-            reply_markup=inline_keyboard,
+            reply_markup=keyboard,
         )
-        logger.info(f"[INFO]: БОТ ОТППРАВИЛ MESSAGE_ID: {message.message_id}")
     else:
         message = await bot.send_message(
             chat_id=int(chat_id),
             text=Phrase.NO_REPONSE,
         )
 
-    logger.info(f"[INFO]: Sent message from bot to user: {chat_id} with text: {text}")
-    # state = dp.current_state(chat=int(chat_id), user=int(chat_id))
-    # await state.update_data(last_message_id=message.message_id)
-    # await EventsLogger.log_new_bot_message(message=message)
+    state = dp.current_state(chat=chat_id, user=chat_id)
+    await state.update_data(last_message_id=message.message_id)
+    
     return schemas.UpdateMessageDTO(
         chat_id=str(message.chat.id),
         message_id=str(message.message_id),
@@ -54,14 +62,33 @@ async def send_bot_message_to_user(
 
 
 async def send_dispatcher_message_to_user(
-    chat_id: int,
+    chat_id: str,
     text: str,
-) -> None:
-    await bot.send_message(
-        chat_id=chat_id,
+    is_done: bool,
+) -> schemas.UpdateMessageDTO:
+    """Send a message from the dispatcher to a user."""
+    message = await bot.send_message(
+        chat_id=int(chat_id),
         text=text,
     )
-    logger.info(f"Sent message from dispatcher to user: {chat_id} and text: {text}")
+
+    state = dp.current_state(chat=chat_id, user=chat_id)
+    await state.update_data(last_message_id=message.message_id)
+
+    if is_done:
+        await state.finish()
+        message = await bot.send_message(
+            chat_id=int(chat_id),
+            text=Phrase.NO_REPONSE,
+        )
+
+    return schemas.UpdateMessageDTO(
+        chat_id=str(message.chat.id),
+        message_id=str(message.message_id),
+        text=None,
+        created_at=None,
+        is_helpful=None,
+    )
 
 
 async def send_ai_message_to_user_mock(

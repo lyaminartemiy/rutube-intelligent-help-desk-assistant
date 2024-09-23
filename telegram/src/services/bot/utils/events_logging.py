@@ -18,7 +18,7 @@ def clean_params(**kwargs) -> Dict[str, Any]:
 
 def _create_new_session_model(message: types.Message) -> schemas.CreateSessionDTO:
     """Create a new session model."""
-    return schemas.CreateSessionDTO(chat_id=str(message.chat.id))
+    return schemas.CreateSessionDTO(chat_id=str(message.from_user.id))
 
 
 def _create_user_message_model(message: types.Message) -> schemas.UpdateMessageDTO:

@@ -30,7 +30,7 @@ async def reset_dislike_count(callback_query: types.CallbackQuery, state: FSMCon
     if await is_last_message(callback_query, state):
         await state.update_data(dislike_count=0)
 
-    await EventsLogger.log_user_feedback(message=callback_query, is_positive=True)
+    await EventsLogger.log_user_feedback(callback_query=callback_query, is_positive=True)
 
 
 async def increment_dislike_count(callback_query: types.CallbackQuery, state: FSMContext) -> None:
@@ -40,7 +40,7 @@ async def increment_dislike_count(callback_query: types.CallbackQuery, state: FS
         dislike_count = data.get("dislike_count", 0) + 1
         await state.update_data(dislike_count=dislike_count)
 
-        await EventsLogger.log_user_feedback(message=callback_query, is_positive=False)
+        await EventsLogger.log_user_feedback(callback_query=callback_query, is_positive=False)
 
         if dislike_count >= 2:
             await callback_query.message.answer(
