@@ -28,7 +28,7 @@ public class SendMessageService {
             AiResponse aiResponse
     ) {
         log.info("Мы попали в момент, когда бэк отслыает соообщение бота в питон");
-        if (aiResponse.isQuestionAnswered()) {
+        if (aiResponse.isAnswer()) {
                 SendMessageResponse sendMessageResponse = sendMessageClient.sendMessageFromBot(
                         new SendBotMessageDto(
                                 session.getChatId(),

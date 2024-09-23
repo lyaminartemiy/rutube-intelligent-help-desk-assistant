@@ -6,6 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AiResponse(
         String text,
-        Boolean isQuestionAnswered
+        Boolean isAnswer
 ) {
 }

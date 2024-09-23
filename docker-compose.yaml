@@ -47,18 +47,18 @@ services:
       - TZ=Europe/Moscow
     restart: unless-stopped
 
-#  hackaton-ml:
-#    build: ./ml
-#    container_name: hackaton-ml
-#    ports:
-#      - "8001:8000"
-#    networks:
-#      - conversation_analysis_network
-#    environment:
-#      - TZ=Europe/Moscow
+  hackaton-ml:
+    build: ./ml
+    container_name: hackaton-ml
+    ports:
+      - "8001:8001"
+    networks:
+      - hack_network
+    environment:
+      - TZ=Europe/Moscow
 #    depends_on:
 #      - hackaton-postgres
-#    restart: unless-stopped
+    restart: unless-stopped
 
 networks:
   hack_network:
