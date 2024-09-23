@@ -11,6 +11,6 @@ import java.util.List;
 @FeignClient(name = "aiClient", url = "http://hackaton-ml:8001")
 public interface AIClient {
 
-    @GetMapping("/send-message/bot")
+    @GetMapping("/api/qa")
     AiResponse getAiResponse(@RequestBody List<AiMessageDto> requestBody);
 }
