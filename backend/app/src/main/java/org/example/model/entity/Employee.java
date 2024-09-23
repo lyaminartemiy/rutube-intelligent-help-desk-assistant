@@ -45,6 +45,8 @@ public class Employee {
 
     Boolean online;
 
+    String profilePicS3Id;
+
     @ManyToMany
     List<TechSupportRequest> requestsInProgress;
 
