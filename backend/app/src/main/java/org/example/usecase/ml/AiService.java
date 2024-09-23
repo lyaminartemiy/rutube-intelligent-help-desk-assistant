@@ -2,6 +2,7 @@ package org.example.usecase.ml;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.model.dto.AiMessageDto;
 import org.example.model.dto.AiResponse;
 import org.example.model.entity.Message;
 import org.example.model.entity.Session;
@@ -22,14 +23,14 @@ public class AiService {
         log.info("Мы попали в момент, когда бэк идет в мл сервис");
         ArrayList<Message> aiContext = new ArrayList<>(messageRepository.findBySession(currentSession));
         aiContext.add(userMessageToAnswer);
-        return new AiResponse("Заглушка ответа", true);
-//        return aiClient.getAiResponse(
-//                aiContext.stream().map(message -> new MessageDto(
-//                        message.getMessageText(),
-//                        message.getCreatedAt(),
-//                        message.getSide(),
-//                        message.getIsHelpful()
-//                )).toList()
-//        );
+//        return new AiResponse("Заглушка ответа", true);
+        return aiClient.getAiResponse(
+                aiContext.stream().map(message -> new AiMessageDto(
+                        message.getMessageText(),
+                        message.getCreatedAt(),
+                        message.getSide(),
+                        message.getIsHelpful()
+                )).toList()
+        );
     }
 }
