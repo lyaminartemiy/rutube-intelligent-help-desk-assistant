@@ -47,6 +47,10 @@ public class Employee implements UserDetails {
 
     String email;
 
+    Boolean online;
+
+    String profilePicS3Id;
+
     @ManyToMany
     List<TechSupportRequest> requestsInProgress;
 

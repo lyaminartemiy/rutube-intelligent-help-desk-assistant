@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,9 @@ public class Session {
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     @Nullable
     ZonedDateTime closedAt;
+
+    @OneToOne
+    TechSupportRequest request;
 
     public enum Status {
         OPEN,

@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.model.dto.MessageDto;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
 import java.util.List;
@@ -27,6 +29,8 @@ public interface TechSupportRequestController {
     List<MessageDto> getDialogueByRequestId(
             @Parameter(description = "ID обращения", required = true) Long requestId
     );
+
+    List<MessageDto> getDialogueByRequestIdWs(@PathVariable Long requestId);
 
     @Operation(summary = "Закрыть обращение по номеру",
             description = "Закрывает указанное обращение по его номеру")

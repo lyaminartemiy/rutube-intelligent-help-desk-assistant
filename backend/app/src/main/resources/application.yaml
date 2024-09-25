@@ -13,6 +13,14 @@ logging:
   level:
     root: info
 
+minio:
+  url: "http://s3.lexa.moscow"
+  access:
+    key: "oxhRmaCoI5BIRsztI1mC"
+    secret: "v7VeOU1AtopgrnunSMBfMwNJoiLDtnLNyLROKEk4"
+  bucket:
+    name: "rutube"
+
 security:
   jwt:
     secretKey: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
@@ -42,3 +50,11 @@ spring:
     password: 9ou1PfX2eDBo
     url: jdbc:postgresql://hack-psql:5432/invexion
   jpa.properties.hibernate.default_schema: rutube_hack_2024
+
+minio:
+  url: "http://happy_mcclintock"
+  access:
+    key: "sIw5FPflq4cQ7eLUoDpv"
+    secret: "C1cyjm82hdYd2oG0a6hWMmrNV4q2P14yV7qF0MIa"
+  bucket:
+    name: "rutube"

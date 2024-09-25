@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.model.dto.FileDto;
 import org.example.model.dto.ProfilePictureDto;
 import org.example.model.dto.UserProfileDto;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +35,7 @@ public interface EmployeeProfileController {
             @ApiResponse(responseCode = "400", description = "Некорректный файл"),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера")
     })
-    void uploadEmployeeProfilePicture(
+    FileDto uploadEmployeeProfilePicture(
             @Parameter(description = "Информация о текущем пользователе", required = true) Principal principal,
             @Parameter(description = "Файл изображения", required = true) MultipartFile file
     );

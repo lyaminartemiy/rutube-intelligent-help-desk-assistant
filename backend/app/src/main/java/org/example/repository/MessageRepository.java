@@ -14,4 +14,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query("select m from Message m where m.session = ?1 order by m.createdAt asc")
     List<Message> findBySession(Session session);
+    List<Message> findBySessionId(Long sessionId);
+    List<Message> findBySession_Request_Id(Long requestId);
 }
