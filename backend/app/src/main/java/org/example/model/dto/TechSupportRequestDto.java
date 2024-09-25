@@ -4,7 +4,7 @@ import java.util.List;
 
 public record TechSupportRequestDto(
         String title,
-        String id,
+        Long id,
         Boolean isInProgress,
         List<String> assignees
 ) {

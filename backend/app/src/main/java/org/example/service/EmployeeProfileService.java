@@ -23,7 +23,7 @@ public class EmployeeProfileService {
 
     public UserProfileDto getEmployeeProfile(Principal principal) {
         Employee employee = employeeRepository.getEmployeesByUsername(principal.getName());
-        return new UserProfileDto(employee.getFullName(),employee.getRole().name());
+        return new UserProfileDto(employee.getFullName(),employee.getRole().name(), employee.getEmail());
     }
 
     public FileDto uploadEmployeeProfilePicture(Principal principal, MultipartFile file) {

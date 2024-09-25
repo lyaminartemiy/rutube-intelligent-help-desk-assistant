@@ -1,9 +1,9 @@
 package org.example.model.dto;
 
-import org.example.model.notDto.EmployeeRole;
+import org.example.model.entity.Employee;
 
 public record AuthDto(
         String jwt,
-        EmployeeRole role
+        Employee.Role role
 ) {
 }

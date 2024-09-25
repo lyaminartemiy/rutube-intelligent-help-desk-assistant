@@ -1,6 +1,8 @@
 package org.example.usecase.frontend;
 
+import lombok.RequiredArgsConstructor;
 import org.example.model.dto.TechSupportRequestDto;
+import org.example.service.TechSupportRequestListService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,17 +13,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/requests")
+@RequiredArgsConstructor
 public class TechSupportRequestListControllerImpl implements TechSupportRequestListController {
+
+    private final TechSupportRequestListService service;
+
     @Override
     @GetMapping("/all")
     public List<TechSupportRequestDto> getAllOpenRequests() {
-        return List.of();
+        return service.getAllOpenRequests();
     }
 
     @Override
     @GetMapping("/unassigned")
     public List<TechSupportRequestDto> getAllUnassignedRequests() {
-        return List.of();
+        return service.getAllUnassignedRequests();
     }
 
     @Override
@@ -33,7 +39,7 @@ public class TechSupportRequestListControllerImpl implements TechSupportRequestL
     @Override
     @GetMapping("/assigned/open")
     public List<TechSupportRequestDto> getAssignedRequestsByEmployee(Principal principal) {
-        return List.of();
+        return service.getAssignedRequestsByEmployee(principal.getName());
     }
 
     @Override
@@ -45,6 +51,6 @@ public class TechSupportRequestListControllerImpl implements TechSupportRequestL
     @Override
     @GetMapping("/assigned/all")
     public List<TechSupportRequestDto> getAllRequestsAssignedToEmployee(Principal principal) {
-        return List.of();
+        return service.getAllRequestsAssignedToEmployee(principal.getName());
     }
 }

@@ -8,10 +8,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.model.dto.MessageDto;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.example.model.entity.Employee;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.security.Principal;
 import java.util.List;
 
 @Tag(name = "Tech Support Requests", description = "Operations related to tech support requests")
@@ -51,9 +50,10 @@ public interface TechSupportRequestController {
             @ApiResponse(responseCode = "400", description = "Некорректный текст сообщения"),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера")
     })
-    void sendMessageToDialogue(
+    MessageDto sendMessageToDialogue(
             @Parameter(description = "ID обращения", required = true) Long requestId,
-            @Parameter(description = "Текст сообщения", required = true) String text
+            @Parameter(description = "Текст сообщения", required = true) String text,
+            Employee employee
     );
 
     @Operation(summary = "Назначить сотрудника на обращение",
@@ -62,5 +62,5 @@ public interface TechSupportRequestController {
             @ApiResponse(responseCode = "200", description = "Сотрудник назначен")
     })
     void assignEmployeeToRequest(@Parameter(description = "ID обращения", required = true) Long requestId,
-                                 Principal principal);
+                                 Employee employee);
 }

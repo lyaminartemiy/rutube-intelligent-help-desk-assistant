@@ -9,7 +9,6 @@ import org.example.model.dto.SendTechSupportMessageDto;
 import org.example.model.entity.Message;
 import org.example.model.entity.Session;
 import org.example.usecase.telegram.SendMessageClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -69,7 +68,19 @@ public class SendMessageService {
 
     }
 
-    public ResponseEntity<SendMessageResponse> sendMessageFromTechSupport(SendTechSupportMessageDto requestBody) {
-        return null;
+    public Message sendMessageFromTechSupport(Session session, String text, String author) {
+        SendMessageResponse sendMessageResponse = sendMessageClient.sendMessageFromTechSupport(new SendTechSupportMessageDto(
+                session.getChatId(),
+                text,
+                false
+        ));
+        return Message.builder()
+                .messageId(sendMessageResponse.messageId())
+                .messageText(text)
+                .createdAt(ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC))
+                .side(Message.Side.TECH_SUPPORT_EMPLOYEE)
+                .session(session)
+                .author(author)
+                .build();
     }
 }
