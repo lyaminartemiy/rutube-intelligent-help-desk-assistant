@@ -2,6 +2,7 @@ package org.example.model.dto;
 
 public record UserProfileDto(
         String fullName,
-        String roleName
+        String roleName,
+        String email
 ) {
 }

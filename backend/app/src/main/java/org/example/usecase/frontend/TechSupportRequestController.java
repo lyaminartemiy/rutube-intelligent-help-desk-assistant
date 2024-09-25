@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.model.dto.MessageDto;
 
+import java.security.Principal;
 import java.util.List;
 
 @Tag(name = "Tech Support Requests", description = "Operations related to tech support requests")
@@ -50,4 +51,12 @@ public interface TechSupportRequestController {
             @Parameter(description = "ID обращения", required = true) Long requestId,
             @Parameter(description = "Текст сообщения", required = true) String text
     );
+
+    @Operation(summary = "Назначить сотрудника на обращение",
+            description = "Назначить сотрудника на обращение")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Сотрудник назначен")
+    })
+    void assignEmployeeToRequest(@Parameter(description = "ID обращения", required = true) Long requestId,
+                                 Principal principal);
 }

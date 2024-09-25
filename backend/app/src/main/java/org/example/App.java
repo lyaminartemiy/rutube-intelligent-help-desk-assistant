@@ -6,12 +6,15 @@ package org.example;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 @EnableFeignClients
 public class App {
 
     public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
+        ConfigurableApplicationContext ctx = SpringApplication.run(App.class, args);
+
+//        ctx.getBean(EmailService.class).sendEmail("semyon.chernomurov@gmail.com", "Тема", "Текст");
     }
 }

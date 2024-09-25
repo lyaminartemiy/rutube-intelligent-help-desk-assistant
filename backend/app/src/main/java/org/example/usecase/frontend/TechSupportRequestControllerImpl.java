@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -27,6 +28,12 @@ public class TechSupportRequestControllerImpl implements TechSupportRequestContr
     @Override
     @PostMapping("/{requestId}/send")
     public void sendMessageToDialogue(@PathVariable Long requestId, String text) {
+
+    }
+
+    @Override
+    @PostMapping("/{requestId}/assign")
+    public void assignEmployeeToRequest(@PathVariable Long requestId, Principal principal) {
 
     }
 }
