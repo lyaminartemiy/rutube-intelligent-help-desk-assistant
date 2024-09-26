@@ -2,6 +2,7 @@ from loguru import logger
 import contextlib
 import os
 import sys
+import shutil
 
 import fastapi
 
@@ -17,8 +18,22 @@ from utils.embeddings import generate_embeddings
 __import__("sqlite3")
 
 
+# from transformers import AutoModelForCausalLM, AutoTokenizer
+
+
 @contextlib.asynccontextmanager
 async def lifespan(app: fastapi.FastAPI):
+    # app.state.tokenizer = AutoTokenizer.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME)
+    # app.state.model = AutoModelForCausalLM.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME)
+    # logger.info("Gemma model and tokenizer loaded")
+
+    app.state.cross_encoder = CrossEncoder(
+        model_name=ModelsConfig.CROSS_ENCODER_NAME,
+        max_length=ModelsConfig.CROSS_ENCODER_MAX_LENGTH,
+        device=ModelsConfig.CROSS_ENCODER_DEVICE,
+    )
+    logger.info("Кросс-энкодер создан")
+
     load_dotenv()
     logger.info("Переменные окружения загружены")
 
@@ -28,27 +43,23 @@ async def lifespan(app: fastapi.FastAPI):
     app.state.embeddings_model = embeddings_model
     logger.info("Модель для создания эмбеддингов загружена")
 
-    generate_embeddings(embeddings_model)
-    logger.info("Эмбеддинги сгенерированы")
-
-    app.state.prompt_template = ChatPromptTemplate.from_template(PromptConfig.PROMPT_TEMPLATE)
+    app.state.prompt_template = ChatPromptTemplate.from_template(
+        PromptConfig.PROMPT_TEMPLATE
+    )
     logger.info("Промпт создан")
 
+    shutil.rmtree(os.getenv("CHROMA_DB"))
     app.state.docs_retriever = Chroma(
         persist_directory=os.getenv("CHROMA_DB"),
         embedding_function=embeddings_model,
     ).as_retriever(search_kwargs={"k": QASystemConfig.CANDIDATES_COUNT})
     logger.info("Хрома создана")
 
+    generate_embeddings(embeddings_model=embeddings_model)
+    logger.info("Эмбеддинги сгенерированы")
+
     app.state.llm = ChatOpenAI(model_name=ModelsConfig.LLM_MODEL_NAME)
     logger.info("LLM создана")
-
-    app.state.cross_encoder = CrossEncoder(
-        model_name=ModelsConfig.CROSS_ENCODER_NAME,
-        max_length=ModelsConfig.CROSS_ENCODER_MAX_LENGTH,
-        device=ModelsConfig.CROSS_ENCODER_DEVICE,
-    )
-    logger.info("Кросс-энкодер создан")
 
     app.state.output_parser = StrOutputParser()
     logger.info("Парсер создан")
@@ -78,3 +89,10 @@ def get_cross_encoder(request: fastapi.Request) -> CrossEncoder:
 
 def get_output_parser(request: fastapi.Request) -> StrOutputParser:
     return request.app.state.output_parser
+
+
+# def get_gemma_model(request: fastapi.Request) -> AutoModelForCausalLM:
+#     return request.app.state.model
+
+# def get_gemma_tokenizer(request: fastapi.Request) -> AutoTokenizer:
+#     return request.app.state.tokenizer

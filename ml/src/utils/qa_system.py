@@ -10,33 +10,34 @@ def extract_documents(info):
     return info
 
 
-def rerank_documents(info, k: int, cross_encoder: CrossEncoder) -> List[Tuple[Any, float]]:
-    def get_top_k(rank_result, docs):
-        top_k = []
-        for i in range(k):
-            doc = rank_result[i]
-            doc_id = doc['corpus_id']
-            doc_score = doc['score']
-            top_k.append((docs[doc_id], doc_score))
-        return top_k
-    if not info['docs_context']:
-        print("НЕТ КОНТЕКСТА!")
-        return info
+def get_top_k(k, rank_result, docs, metadata):
+    docs_top_k, metadata_top_k = [], []
+    for i in range(k):
+        doc = rank_result[i]
+        doc_id = doc["corpus_id"]
+        doc_score = doc["score"]
+        docs_top_k.append((docs[doc_id], doc_score))
+        metadata_top_k.append(metadata[doc_id])
+    return docs_top_k, metadata_top_k
 
-    question = info['question']
-    # docs_context = [doc.page_content for doc in info['docs_context']]
-    docs_context = [doc.page_content for doc in info['docs_context']]
-    for i, docs in enumerate(docs_context):
-        print(f"Документ {i}: {docs}")
-    
-    for docs in docs_context:
-        print("Новый документ", docs)
+
+def rerank_documents(
+    info, k: int, cross_encoder: CrossEncoder
+) -> List[Tuple[Any, float]]:
+    question = info["question"]
+    docs_context = [doc.page_content for doc in info["docs_context"]]
+    docs_metadata = [doc.metadata.get("answer", None) for doc in info["docs_context"]]
+
+    print("\nВходной вопрос:", question)
 
     docs_rank_result = cross_encoder.rank(question, docs_context)
     print("Результаты ранжирования:", docs_rank_result)
 
-    docs_res = get_top_k(docs_rank_result, docs_context)
-    print("Результаты получение топ-К:", docs_res)
-    
-    info['docs_context'] = docs_res
+    docs_res, meta_res = get_top_k(k, docs_rank_result, docs_context, docs_metadata)
+    print("Результаты получения топ-К:")
+    for i, doc in enumerate(docs_res):
+        print(f"Вопрос топ-{i}", doc, "ответ на вопрос: ", docs_metadata[i])
+
+    info["docs_context"] = docs_res
+    info["docs_metadata"] = meta_res
     return info
