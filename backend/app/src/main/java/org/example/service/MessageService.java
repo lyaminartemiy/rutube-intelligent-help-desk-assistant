@@ -18,6 +18,8 @@ public class MessageService {
     }
 
     public List<MessageDto> getMessagesByRequestId(Long requestId) {
-        return messageRepository.findBySession_Request_Id(requestId).stream().map(m -> new MessageDto(m.getMessageText(), m.getCreatedAt(), Message.Side.valueOf(m.getSide().toString()),m.getIsHelpful())).toList();
+        return messageRepository.findBySession_Request_Id(requestId).stream().map(m -> new MessageDto(m.getMessageText(), m.getCreatedAt(), Message.Side.valueOf(m.getSide().toString()),m.getIsHelpful()))
+                .sorted((o1, o2) -> o2.createdAt().compareTo(o1.createdAt()))
+                .toList();
     }
 }

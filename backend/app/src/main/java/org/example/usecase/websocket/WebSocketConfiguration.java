@@ -9,7 +9,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Configuration
 @EnableWebSocket
 @RequiredArgsConstructor
-public class WebSocketConfig implements WebSocketConfigurer {
+public class WebSocketConfiguration implements WebSocketConfigurer {
 
     private final TechSupportRequestWebSocketHandler techSupportRequestWebSocketHandler;
     private final DialogueWebSocketHandler dialogueWebSocketHandler;
@@ -17,6 +17,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(techSupportRequestWebSocketHandler, "/tech-support-requests").setAllowedOrigins("*");
-        registry.addHandler(dialogueWebSocketHandler, "/dialogue");
+        registry.addHandler(dialogueWebSocketHandler, "/dialogue").setAllowedOrigins("*");
     }
 }

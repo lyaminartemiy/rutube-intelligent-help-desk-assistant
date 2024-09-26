@@ -2,7 +2,6 @@ package org.example.usecase.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.example.model.dto.MessageDto;
 import org.example.service.MessageService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -12,10 +11,9 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +33,12 @@ public class DialogueWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
-        Objects.requireNonNull(sessionIdToMainThread.put(session.getId(), new Thread(() -> {
-            while (!sessionIdToRequestIdWithThread.containsKey(session.getId())) {
-            }
+        sessionIdToMainThread.put(session.getId(), new Thread(() -> {
+            while (!sessionIdToRequestIdWithThread.containsKey(session.getId())) {}
             RequestIdWithThread requestIdWithThread = sessionIdToRequestIdWithThread.get(session.getId());
             requestIdWithThread.thread.start();
-        }))).start();
+        }));
+        sessionIdToMainThread.get(session.getId()).start();
     }
 
     @Override
@@ -49,13 +47,21 @@ public class DialogueWebSocketHandler extends TextWebSocketHandler {
         RequestIdWithThread rqwt = new RequestIdWithThread();
         rqwt.requestId = Long.valueOf(message.getPayload());
         rqwt.thread = new Thread(() -> {
-            List<MessageDto> messages = messageService.getMessagesByRequestId(rqwt.requestId);
-            try {
-                session.sendMessage(new TextMessage(mapper.writeValueAsString(messages)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            var oldMessages = messageService.getMessagesByRequestId(rqwt.requestId);
+            while (session.isOpen()) {
+                try {
+                    Thread.sleep(1000);
+                    var newMessages = messageService.getMessagesByRequestId(rqwt.requestId);
+                    if (!Arrays.deepToString(oldMessages.toArray()).equals(Arrays.deepToString(newMessages.toArray()))) {
+                        oldMessages = newMessages;
+                        session.sendMessage(new TextMessage(mapper.writeValueAsString(newMessages)));
+                    }
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
+        sessionIdToRequestIdWithThread.put(session.getId(), rqwt);
     }
 
     @Override

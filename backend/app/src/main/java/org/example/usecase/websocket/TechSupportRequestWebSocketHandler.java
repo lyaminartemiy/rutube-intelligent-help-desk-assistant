@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class TechSupportRequestWebSocketHandler extends TextWebSocketHandler  {
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
-        Objects.requireNonNull(sessionIdToThread.put(session.getId(), new Thread(() -> {
+        sessionIdToThread.put(session.getId(), new Thread(() -> {
             var oldRequests = service.getAllOpenRequests();
             while (session.isOpen()) {
                 try {
@@ -42,7 +41,8 @@ public class TechSupportRequestWebSocketHandler extends TextWebSocketHandler  {
                     throw new RuntimeException(e);
                 }
             }
-        }))).start();
+        }));
+        sessionIdToThread.get(session.getId()).start();
     }
 
     @Override

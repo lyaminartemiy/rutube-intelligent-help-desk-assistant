@@ -24,7 +24,7 @@ public class TechSupportRequestListService {
                         request.getStatus().equals(TechSupportRequest.Status.IN_PROGRESS),
                         request.getAssignedEmployees().stream().map(Employee::getFullName).toList()
                 )
-        ).toList();
+        ).sorted((o1, o2) -> o2.id().compareTo(o1.id())).toList();
     }
 
     public List<TechSupportRequestDto> getAllUnassignedRequests() {

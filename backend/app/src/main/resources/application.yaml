@@ -8,7 +8,7 @@ server.port: 8080
 
 spring.jpa.hibernate.ddl-auto: update
 
-debug: true
+debug: false
 logging:
   level:
     root: info
@@ -20,6 +20,17 @@ minio:
     secret: "v7VeOU1AtopgrnunSMBfMwNJoiLDtnLNyLROKEk4"
   bucket:
     name: "rutube"
+
+#minio:
+#  url: "https://play.min.io:9000"
+#  access:
+#    key: "Q3AM3UQ867SPQQA43P2F"
+#    secret: "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
+#  bucket:
+#    name: "rutube"
+
+
+
 
 security:
   jwt:
