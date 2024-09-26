@@ -3,6 +3,7 @@
  */
 package org.example;
 
+import org.example.usecase.telegram.impl.SessionService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -12,9 +13,17 @@ import org.springframework.context.ConfigurableApplicationContext;
 @EnableFeignClients
 public class App {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ConfigurableApplicationContext ctx = SpringApplication.run(App.class, args);
+        Thread.sleep(20000);
 
+        ctx.getBean(SessionService.class).createNewSession("123");
+        ctx.getBean(SessionService.class).sendSessionToTechSupport("123");
+
+        Thread.sleep(5000);
+
+        ctx.getBean(SessionService.class).createNewSession("456");
+        ctx.getBean(SessionService.class).sendSessionToTechSupport("456");
 //        ctx.getBean(EmailService.class).sendEmail("semyon.chernomurov@gmail.com", "Тема", "Текст");
     }
 }

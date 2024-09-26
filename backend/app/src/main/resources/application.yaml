@@ -42,6 +42,10 @@ spring.datasource:
   username: sa
   password:
   url: jdbc:h2:mem:rutube_hack
+#spring.datasource:
+#  username: postgres
+#  password: root
+#  url: jdbc:postgresql://localhost:5432/postgres
 ---
 spring.config.activate.on-profile: postgres-prod-database
 spring:

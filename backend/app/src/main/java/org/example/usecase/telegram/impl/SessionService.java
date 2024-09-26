@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +50,7 @@ public class SessionService {
                         .title("Запрос в техподдержку") // TODO хотелось бы получить от ИИ
                         .session(currentOpenedSession)
                         .status(TechSupportRequest.Status.OPEN)
+                        .assignedEmployees(new ArrayList<>())
                         .build()
         );
     }

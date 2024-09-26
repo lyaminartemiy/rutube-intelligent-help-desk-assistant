@@ -3,6 +3,7 @@ package org.example.model.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +32,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Employee implements UserDetails {
 
     @Id
@@ -51,7 +54,7 @@ public class Employee implements UserDetails {
 
     String profilePicS3Id;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     List<TechSupportRequest> requestsInProgress;
 
     @Override

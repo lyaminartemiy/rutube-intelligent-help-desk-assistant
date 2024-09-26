@@ -4,6 +4,7 @@ package org.example.model.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class TechSupportRequest {
 
     @Id
@@ -44,7 +47,7 @@ public class TechSupportRequest {
     @Enumerated(EnumType.STRING)
     Status status;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     List<Employee> assignedEmployees;
 
     public enum Status {
