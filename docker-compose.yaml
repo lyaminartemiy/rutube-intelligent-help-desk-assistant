@@ -33,32 +33,76 @@ services:
       - TZ=Europe/Moscow
     restart: unless-stopped
 
-  hackaton-tgbot:
-    build: ./telegram
-    container_name: hackaton-tgbot
+#  hackaton-tgbot:
+#    build: ./telegram
+#    container_name: hackaton-tgbot
+#    ports:
+#      - "8000:8000"
+#    networks:
+#      - hack_network
+#    dns:
+#      - 8.8.8.8
+#      - 8.8.4.4
+#    environment:
+#      - TZ=Europe/Moscow
+#    restart: unless-stopped
+
+#  hackaton-ml:
+#    build: ./ml
+#    container_name: hackaton-ml
+#    ports:
+#      - "8001:8001"
+#    networks:
+#      - hack_network
+#    environment:
+#      - TZ=Europe/Moscow
+##    depends_on:
+##      - hackaton-postgres
+#    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    container_name: minio
     ports:
-      - "8000:8000"
+      - "9000:9000"
+      - "9001:9001"
     networks:
       - hack_network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
     environment:
-      - TZ=Europe/Moscow
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: rYihCMkc
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
     restart: unless-stopped
 
-  hackaton-ml:
-    build: ./ml
-    container_name: hackaton-ml
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
     ports:
-      - "8001:8001"
+      - "9090:9090"
+    networks:
+      - hack_network
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
     networks:
       - hack_network
     environment:
-      - TZ=Europe/Moscow
-#    depends_on:
-#      - hackaton-postgres
+      - GF_SECURITY_ADMIN_PASSWORD=rYihCMkc
     restart: unless-stopped
 
 networks:
   hack_network:
+
+volumes:
+  minio_data:
+  prometheus_data:
