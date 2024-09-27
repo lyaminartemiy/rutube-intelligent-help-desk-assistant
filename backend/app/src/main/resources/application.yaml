@@ -74,15 +74,7 @@ spring.datasource:
 spring.config.activate.on-profile: postgres-prod-database
 spring:
   datasource:
-    username: invexion
-    password: 9ou1PfX2eDBo
-    url: jdbc:postgresql://hack-psql:5432/invexion
-  jpa.properties.hibernate.default_schema: rutube_hack_2024
-
-minio:
-  url: "http://happy_mcclintock"
-  access:
-    key: "sIw5FPflq4cQ7eLUoDpv"
-    secret: "C1cyjm82hdYd2oG0a6hWMmrNV4q2P14yV7qF0MIa"
-  bucket:
-    name: "rutube"
+    username: postgres
+    password: rYihCMkc
+    url: jdbc:postgresql://hackaton-postgres:5432/rutube
+  jpa.properties.hibernate.default_schema: public
