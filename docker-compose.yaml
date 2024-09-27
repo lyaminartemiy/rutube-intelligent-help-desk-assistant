@@ -106,3 +106,4 @@ networks:
 volumes:
   minio_data:
   prometheus_data:
+  postgres_data:
