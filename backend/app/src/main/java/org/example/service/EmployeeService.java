@@ -21,9 +21,9 @@ public class EmployeeService {
                 .map(e -> new EmployeeDto(
                         e.getId(),
                         e.getFullName(),
-                        e.getRequestsInProgress().size(),
+                        (long) e.getRequestsInProgress().size(),
                         techSupportRequestRepository.findByAssignedEmployees_Username(e.getUsername()).stream().filter(rq -> rq.getStatus().equals(TechSupportRequest.Status.CLOSED)).count(),
                         e.getOnline()
-                ))
+                )).toList();
     }
 }
