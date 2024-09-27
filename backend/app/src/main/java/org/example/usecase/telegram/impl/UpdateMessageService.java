@@ -59,8 +59,10 @@ public class UpdateMessageService {
                                         .build()
                         );
 
-                        AiResponse aiResponse = aiService.getAnswerFromAi(currentSession, userMessageToAnswer);
-                        messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
+                        if (currentSession.getRequest() == null) {
+                            AiResponse aiResponse = aiService.getAnswerFromAi(currentSession, userMessageToAnswer);
+                            messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
+                        }
                     } else {
                         log.info("Мы попали в момент, когда питон присылает messageId для его установки в ботовское сообщение");
                         Message lastMessageInSession = messageRepository.findBySession(currentSession).getLast();
