@@ -26,6 +26,7 @@ public class TechSupportRequestWebSocketHandler extends TextWebSocketHandler  {
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
+        session.sendMessage(new TextMessage(mapper.writeValueAsString(service.getAllOpenRequests())));
         sessionIdToThread.put(session.getId(), new Thread(() -> {
             var oldRequests = service.getAllOpenRequests();
             while (session.isOpen()) {

@@ -12,11 +12,11 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
     private final TechSupportRequestWebSocketHandler techSupportRequestWebSocketHandler;
-    private final DialogueWebSocketHandler dialogueWebSocketHandler;
+//    private final DialogueWebSocketHandler dialogueWebSocketHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(techSupportRequestWebSocketHandler, "/tech-support-requests").setAllowedOrigins("*");
-        registry.addHandler(dialogueWebSocketHandler, "/dialogue").setAllowedOrigins("*");
+//        registry.addHandler(dialogueWebSocketHandler, "/dialogue").setAllowedOrigins("*");
     }
 }
