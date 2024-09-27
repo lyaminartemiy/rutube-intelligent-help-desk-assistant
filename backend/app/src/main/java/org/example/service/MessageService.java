@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -30,13 +31,19 @@ public class MessageService {
         log.info("4");
         List<Message> messages = requestSession.getMessages();
         log.info(String.valueOf(messages.size()));
-        return messages.stream().map(
-                m -> new MessageDto(
-                        m.getMessageText(),
-                        m.getCreatedAt(),
-                        m.getSide(),
-                        m.getIsHelpful()
-                )
-        ).toList();
+//        return messages.stream().map(
+//                m -> new MessageDto(
+//                        m.getMessageText(),
+//                        m.getCreatedAt(),
+//                        m.getSide(),
+//                        m.getIsHelpful()
+//                )
+//        ).toList();
+        return List.of(new MessageDto(
+                "text",
+                ZonedDateTime.now(),
+                Message.Side.BOT,
+                true
+        ));
     }
 }
