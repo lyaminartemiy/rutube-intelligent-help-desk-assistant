@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.model.dto.MessageDto;
 import org.example.model.entity.Employee;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface TechSupportRequestController {
             @ApiResponse(responseCode = "404", description = "Обращение не найдено"),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера")
     })
-    List<MessageDto> getDialogueByRequestId(
+    ResponseEntity<List<MessageDto>> getDialogueByRequestId(
             @Parameter(description = "ID обращения", required = true) Long requestId
     );
 

@@ -7,6 +7,7 @@ import org.example.service.MessageService;
 import org.example.service.TechSupportRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +29,11 @@ public class TechSupportRequestControllerImpl implements TechSupportRequestContr
 
     @Override
     @GetMapping("/{requestId}/dialogue")
-    public List<MessageDto> getDialogueByRequestId(@PathVariable Long requestId) {
+    public ResponseEntity<List<MessageDto>> getDialogueByRequestId(@PathVariable Long requestId) {
         log.info("getDialogueByRequestId: {}", requestId);
-        return messageService.getMessagesByRequestId(requestId);
+        List<MessageDto> messages = messageService.getMessagesByRequestId(requestId);
+        log.info(String.valueOf(messages.size()));
+        return ResponseEntity.ok(messages);
     }
 
     @Override
