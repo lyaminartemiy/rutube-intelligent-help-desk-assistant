@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -20,6 +21,7 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Table(name = "sessions")
 @Entity
@@ -50,6 +52,9 @@ public class Session {
 
     @OneToOne(mappedBy = "session")
     TechSupportRequest request;
+
+    @OneToMany(mappedBy = "session")
+    List<Message> messages;
 
     public enum Status {
         OPEN,
