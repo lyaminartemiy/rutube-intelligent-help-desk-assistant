@@ -20,7 +20,7 @@ public class AiService {
 
     public AiResponse getAnswerFromAi(Session currentSession, Message userMessageToAnswer) {
         log.info("Мы попали в момент, когда бэк идет в мл сервис");
-        ArrayList<Message> aiContext = new ArrayList<>(messageRepository.findBySession(currentSession));
+        ArrayList<Message> aiContext = new ArrayList<>(messageRepository.findAllBySession_Id(currentSession.getId()));
         aiContext.add(userMessageToAnswer);
         return new AiResponse("Заглушка ответа", true);
 //        return aiClient.getAiResponse(

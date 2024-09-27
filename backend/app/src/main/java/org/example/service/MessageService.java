@@ -25,8 +25,7 @@ public class MessageService {
     public List<MessageDto> getMessagesByRequestId(Long requestId) {
         log.info("getMessagesByRequestId: {}", requestId);
         TechSupportRequest request = techSupportRequestRepository.findById(requestId).get();
-        log.info(request.toString());
-        return messageRepository.findBySession(request.getSession()).stream()
+        return messageRepository.findAllBySession_Id(request.getSession().getId()).stream()
                 .map(m -> new MessageDto(
                         m.getMessageText(),
                         m.getCreatedAt(),
