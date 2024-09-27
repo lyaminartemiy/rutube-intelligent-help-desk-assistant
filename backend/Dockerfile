@@ -32,4 +32,4 @@ COPY --from=build /myjre $JAVA_HOME
 COPY --from=build /project/app/build/libs/$JAR_FILE /libs/
 COPY --from=build /project/app/build/resources /resources/
 
-CMD ["java", "-jar", "libs/app.jar", "--spring.profiles.active=test-local"]
+CMD ["java", "-jar", "libs/app.jar", "--spring.profiles.active=prod"]
