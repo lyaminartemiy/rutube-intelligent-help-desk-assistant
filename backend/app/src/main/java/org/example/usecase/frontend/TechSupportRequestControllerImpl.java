@@ -5,8 +5,6 @@ import org.example.model.dto.MessageDto;
 import org.example.model.entity.Employee;
 import org.example.service.MessageService;
 import org.example.service.TechSupportRequestService;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,13 +26,6 @@ public class TechSupportRequestControllerImpl implements TechSupportRequestContr
     @Override
     @GetMapping("/{requestId}/dialogue")
     public List<MessageDto> getDialogueByRequestId(@PathVariable Long requestId) {
-        return messageService.getMessagesByRequestId(requestId);
-    }
-
-    @MessageMapping("/getMessages")
-    @SendTo("/topic/messages")
-    @Override
-    public List<MessageDto> getDialogueByRequestIdWs(@PathVariable Long requestId) {
         return messageService.getMessagesByRequestId(requestId);
     }
 
