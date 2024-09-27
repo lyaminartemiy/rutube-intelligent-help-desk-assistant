@@ -54,5 +54,6 @@ public class SessionService {
                         .build()
         );
         currentOpenedSession.setRequest(supportRequest);
+        sessionRepository.save(currentOpenedSession);
     }
 }
