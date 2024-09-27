@@ -45,7 +45,7 @@ public class SessionService {
         Session currentOpenedSession = sessionRepository.findByChatIdAndStatus(chatId, Session.Status.OPEN).getFirst();
 
         // Создать запрос в тех. поддержку
-        techSupportRequestRepository.save(
+        TechSupportRequest supportRequest = techSupportRequestRepository.save(
                 TechSupportRequest.builder()
                         .title("Запрос в техподдержку") // TODO хотелось бы получить от ИИ
                         .session(currentOpenedSession)
@@ -53,5 +53,6 @@ public class SessionService {
                         .assignedEmployees(new ArrayList<>())
                         .build()
         );
+        currentOpenedSession.setRequest(supportRequest);
     }
 }
