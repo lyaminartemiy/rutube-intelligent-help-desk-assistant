@@ -9,16 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/api/requestssss")
+@RestController
+@RequestMapping("/api/requests")
 @RequiredArgsConstructor
 public class TechSupportRequestControllerImpl implements TechSupportRequestController {
 
@@ -30,10 +30,7 @@ public class TechSupportRequestControllerImpl implements TechSupportRequestContr
     @Override
     @GetMapping("/{requestId}/dialogue")
     public ResponseEntity<List<MessageDto>> getDialogueByRequestId(@PathVariable Long requestId) {
-        log.info("getDialogueByRequestId: {}", requestId);
-        List<MessageDto> messages = messageService.getMessagesByRequestId(requestId);
-        log.info(String.valueOf(messages.size()));
-        return ResponseEntity.ok(messages);
+        return ResponseEntity.ok(messageService.getMessagesByRequestId(requestId));
     }
 
     @Override
