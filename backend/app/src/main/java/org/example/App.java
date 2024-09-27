@@ -21,6 +21,11 @@ public class App {
                 Employee.Role.ADMIN,
                 "olenkaevstratova@gmail.com"
         );
+        ctx.getBean(AuthService.class).sendSignUpDataToEmail(
+                "Петров Виктор ПОЛЬЗАКТП",
+                Employee.Role.TECH_SUPPORT_EMPLOYEE,
+                "olenkaevstratova@gmail.com"
+        );
 //        ctx.getBean(AuthService.class).sendSignUpDataToEmail(
 //                "Петров Виктор Администраторович",
 //                Employee.Role.TECH_SUPPORT_EMPLOYEE,
