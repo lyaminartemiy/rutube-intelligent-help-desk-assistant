@@ -6,6 +6,7 @@ import org.example.model.entity.Message;
 import org.example.model.entity.Session;
 import org.example.repository.MessageRepository;
 import org.example.repository.SessionRepository;
+import org.example.repository.TechSupportRequestRepository;
 import org.example.usecase.ml.AiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +25,15 @@ public class UpdateMessageService {
 
     private final SendMessageService sendMessageService;
     private final AiService aiService;
+    private final TechSupportRequestRepository techSupportRequestRepository;
 
     public void createOrUpdateMessageInDatabase(
             String chatId,
             String messageId,
             String text,
             ZonedDateTime createdAt,
-            Boolean isHelpful
+            Boolean isHelpful,
+            Message.Side messageSide // TODO НОВОЕ ПОЛЕ ДОБАВИТЬ АРТЕМУ В КОНТРАКТ
     ) {
         System.out.println("chatId: " + chatId);
         System.out.println("messageId: " + messageId);
@@ -63,9 +66,19 @@ public class UpdateMessageService {
                             AiResponse aiResponse = aiService.getAnswerFromAi(currentSession, userMessageToAnswer);
                             messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
                         }
+//                        if (messageSide == Message.Side.BOT) {
+//                            TechSupportRequest newRequest = TechSupportRequest.builder()
+//                                    .title(text)
+//                                    .status(TechSupportRequest.Status.OPEN)
+//                                    .session(currentSession)
+//                                    .assignedEmployees(new ArrayList<>())
+//                                    .build();
+//                            techSupportRequestRepository.save(newRequest);
+//                        }
+//                        messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
                     } else {
                         log.info("Мы попали в момент, когда питон присылает messageId для его установки в ботовское сообщение");
-                        Message lastMessageInSession = messageRepository.findBySession(currentSession).getLast();
+                        Message lastMessageInSession = messageRepository.findAllBySession_Id(currentSession.getId()).getLast();
                         log.info("prev messageId: {}", lastMessageInSession.getMessageId());
                         lastMessageInSession.setMessageId(messageId);
                         log.info("last messageId: {}", lastMessageInSession.getMessageId());
