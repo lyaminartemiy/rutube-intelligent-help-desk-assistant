@@ -40,7 +40,7 @@ public class TechSupportRequest {
 
     String title;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "session_id")
     Session session;
 
