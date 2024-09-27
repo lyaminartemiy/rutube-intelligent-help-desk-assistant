@@ -29,7 +29,14 @@ public class MessageService {
         Session requestSession = request.getSession();
         log.info("4");
         List<Message> messages = requestSession.getMessages();
-        log.info("5");
-        return List.of();
+        log.info(String.valueOf(messages.size()));
+        return messages.stream().map(
+                m -> new MessageDto(
+                        m.getMessageText(),
+                        m.getCreatedAt(),
+                        m.getSide(),
+                        m.getIsHelpful()
+                )
+        ).toList();
     }
 }
