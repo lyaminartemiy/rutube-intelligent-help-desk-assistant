@@ -30,13 +30,6 @@ public class MessageService {
         log.info("4");
         List<Message> messages = requestSession.getMessages();
         log.info("5");
-        return messages.stream().map(
-                m -> new MessageDto(
-                        m.getMessageText(),
-                        m.getCreatedAt(),
-                        m.getSide(),
-                        m.getIsHelpful()
-                )
-        ).toList();
+        return List.of();
     }
 }
