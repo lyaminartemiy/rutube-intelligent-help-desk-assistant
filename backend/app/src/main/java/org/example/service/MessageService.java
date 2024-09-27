@@ -21,13 +21,9 @@ public class MessageService {
     private final TechSupportRequestRepository techSupportRequestRepository;
 
     public List<MessageDto> getMessagesByRequestId(Long requestId) {
-        log.info("1");
         TechSupportRequest request = techSupportRequestRepository.findById(requestId).orElseThrow(() -> new IllegalStateException("ПИЗДЕЦ"));
-        log.info("2");
         assert request != null;
-        log.info("3");
         Session requestSession = request.getSession();
-        log.info("4");
         List<Message> messages = requestSession.getMessages();
         log.info(String.valueOf(messages.size()));
         return messages.stream().map(
