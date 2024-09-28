@@ -62,16 +62,16 @@ export class AdminAccountComponent implements OnInit{
   addForm: FormGroup;
   ngOnInit(): void {
     this.addForm = this.fb.group({
-      name: ['', Validators.required],
+      fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email,Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]],
-      role: [Role.ADMIN]
+      role: [Role.TECH_SUPPORT_EMPLOYEE]
     });
     this.getChartAll();
     this.getChartEvery();
   }
 
-  get name(): any {
-    return this.addForm.get('name')
+  get fullName(): any {
+    return this.addForm.get('fullName')
   };
 
   get email(): any {
@@ -118,9 +118,9 @@ export class AdminAccountComponent implements OnInit{
         next: (r) => {
           this.notifierService.notify('success', 'Приглашение отправлено пользователю на почту!');
           this.addForm = this.fb.group({
-            name: ['', Validators.required],
+            fullName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email,Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]],
-            role: [Role.ADMIN]
+            role: [Role.TECH_SUPPORT_EMPLOYEE]
           })
           
         },
