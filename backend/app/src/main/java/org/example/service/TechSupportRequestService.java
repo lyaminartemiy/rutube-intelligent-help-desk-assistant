@@ -43,6 +43,8 @@ public class TechSupportRequestService {
     }
 
     public void assignEmployeeToRequest(Long requestId, Employee employee) {
-        techSupportRequestRepository.findById(requestId).get().getAssignedEmployees().add(employee);
+        TechSupportRequest request = techSupportRequestRepository.findById(requestId).get();
+        request.getAssignedEmployees().add(employee);
+        techSupportRequestRepository.save(request);
     }
 }
