@@ -8,12 +8,14 @@ import shutil
 
 import fastapi
 
+import torch
 from config.config import ModelsConfig, PromptConfig, QASystemConfig
 from dotenv import load_dotenv
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
 from langchain_chroma import Chroma
 from sentence_transformers import CrossEncoder
+from transformers import pipeline
 from utils.embeddings import generate_embeddings, CustomEmbeddings
 
 __import__("sqlite3")
@@ -24,8 +26,14 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 @contextlib.asynccontextmanager
 async def lifespan(app: fastapi.FastAPI):
-    app.state.tokenizer = AutoTokenizer.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME, use_fast=False)
-    app.state.model = AutoModelForCausalLM.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME, device_map="sequential")
+    # app.state.tokenizer = AutoTokenizer.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME, use_fast=False)
+    # app.state.model = AutoModelForCausalLM.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME, device_map="sequential")
+    app.state.tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-9b-it")
+    app.state.model = AutoModelForCausalLM.from_pretrained(
+        "google/gemma-2-9b-it",
+        device_map="cuda",
+        torch_dtype=torch.bfloat16,
+    )
     logger.info("Gemma model and tokenizer loaded")
 
     app.state.cross_encoder = CrossEncoder(
