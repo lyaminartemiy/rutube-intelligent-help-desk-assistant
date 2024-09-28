@@ -13,7 +13,6 @@ from dotenv import load_dotenv
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
 from langchain_chroma import Chroma
-# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from sentence_transformers import CrossEncoder
 from utils.embeddings import generate_embeddings, CustomEmbeddings
 
@@ -34,18 +33,16 @@ async def lifespan(app: fastapi.FastAPI):
         max_length=ModelsConfig.CROSS_ENCODER_MAX_LENGTH,
         device=ModelsConfig.CROSS_ENCODER_DEVICE,
     )
-    logger.info("Кросс-энкодер создан")
+    logger.info("Cross-encoder created")
 
     load_dotenv()
-    logger.info("Переменные окружения загружены")
+    logger.info("Environment variables loaded")
 
     sys.modules["sqlite3"] = sys.modules.pop("sqlite3")
 
-    # embeddings_model = OpenAIEmbeddings(model=ModelsConfig.EMBEDDING_MODEL_NAME)
-    # app.state.embeddings_model = embeddings_model
     embeddings_model = CustomEmbeddings(model_name="intfloat/multilingual-e5-base")
     app.state.embeddings_model = embeddings_model
-    logger.info("Модель для создания эмбеддингов загружена")
+    logger.info("Embeddings model loaded")
 
     app.state.answer_prompt_template = ChatPromptTemplate.from_template(
         PromptConfig.ANSWER_PROMPT_TEMPLATE
@@ -53,26 +50,23 @@ async def lifespan(app: fastapi.FastAPI):
     app.state.question_prompt_template = ChatPromptTemplate.from_template(
         PromptConfig.QUESTION_PROMPT_TEMPLATE
     )
-    logger.info("Промпт создан")
+    logger.info("Prompt created")
 
     shutil.rmtree(os.getenv("CHROMA_DB"))
     app.state.docs_retriever = Chroma(
         persist_directory=os.getenv("CHROMA_DB"),
         embedding_function=embeddings_model,
     ).as_retriever(search_kwargs={"k": QASystemConfig.CHROMA_CANDIDATES_COUNT})
-    logger.info("Хрома создана")
+    logger.info("Chroma created")
 
     source_faq = pd.read_parquet(os.getenv("RUTUBE_DOCUMENTS_PATH"))
-    logger.info("Исходные данные загружены")
+    logger.info("Source data loaded")
 
     generate_embeddings(embeddings_model=embeddings_model, source_faq=source_faq)
-    logger.info("Эмбеддинги сгенерированы")
-
-    # app.state.llm = ChatOpenAI(model_name=ModelsConfig.LLM_MODEL_NAME)
-    # logger.info("LLM создана")
+    logger.info("Embeddings generated")
 
     app.state.output_parser = StrOutputParser()
-    logger.info("Парсер создан")
+    logger.info("Output parser created")
 
     yield
 
@@ -91,10 +85,6 @@ def get_answer_prompt_template(request: fastapi.Request) -> ChatPromptTemplate:
 
 def get_docs_retriever(request: fastapi.Request) -> Chroma:
     return request.app.state.docs_retriever
-
-
-# def get_llm(request: fastapi.Request) -> ChatOpenAI:
-#     return request.app.state.llm
 
 
 def get_cross_encoder(request: fastapi.Request) -> CrossEncoder:

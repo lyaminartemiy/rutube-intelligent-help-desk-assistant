@@ -5,7 +5,6 @@ import pandas as pd
 
 from langchain.schema import Document
 from langchain_chroma import Chroma
-from resources.faq import data
 from langchain_core.embeddings import Embeddings
 from sentence_transformers import SentenceTransformer
 
@@ -26,7 +25,7 @@ def generate_embeddings(
     embeddings_model: CustomEmbeddings, source_faq: pd.DataFrame
 ) -> None:
     db = Chroma(persist_directory=os.getenv("CHROMA_DB"))
-    db.delete(ids=[str(i) for i in range(1, len(data) + 1)])
+    db.delete(ids=[str(i) for i in range(1, len(source_faq) + 1)])
 
     faq = source_faq.apply(
         lambda x: Document(

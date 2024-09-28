@@ -1,5 +1,6 @@
 from typing import Any, Dict
 
+import torch
 from config.config import QASystemConfig, PromptConfig
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
@@ -10,7 +11,6 @@ from langchain_core.runnables import (
     RunnableParallel,
     RunnablePassthrough,
 )
-from langchain_openai import ChatOpenAI
 from sentence_transformers import CrossEncoder
 from utils.qa_system import rerank_documents
 
@@ -23,7 +23,6 @@ def query_system(
     question_prompt_template: ChatPromptTemplate,
     answer_prompt_template: ChatPromptTemplate,
     doc_retriever: Chroma,
-    # llm: ChatOpenAI,
     tokenizer: AutoTokenizer,
     model: AutoModelForCausalLM,
     cross_encoder: CrossEncoder,
@@ -79,7 +78,7 @@ def gemma_inference(info, tokenizer, model, prompt_template: ChatPromptTemplate)
         truncation=True,
         add_generation_prompt=True,
         return_tensors="pt"
-    ).to("cpu")
+    ).to("cuda" if torch.cuda.is_available() else "cpu")
     outputs = model.generate(
         input_ids=input_ids,
         max_new_tokens=512,

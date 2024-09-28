@@ -1,3 +1,7 @@
+class GPUConfig:
+    USE_GPU: bool = True
+
+
 class QASystemConfig:
     CHROMA_CANDIDATES_COUNT: int = 10
     RERANKER_CANDIDATES_COUNT: int = 3
