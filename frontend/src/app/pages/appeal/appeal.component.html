@@ -1,4 +1,4 @@
-<div class="card card__green" *ngIf="item" [ngClass]="item.isInProgress ? 'card__red' : 'card__green' ">
+<div class="card card__green" *ngIf="item && all" [ngClass]="item.isInProgress ? 'card__red' : 'card__green' ">
     <div style="display: flex; flex-direction: column; gap: 10px">
         <p>Тема: {{item.title}}</p>
         <small>№ {{ item.id }}</small>

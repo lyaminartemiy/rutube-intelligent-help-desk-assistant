@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {RutubeService} from "../../core/services/rutube.service";
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-history',
@@ -10,11 +9,7 @@ import {Router} from "@angular/router";
 })
 export class HistoryComponent {
   name = new FormControl<string>('')
-  constructor(private rutubeService: RutubeService, private router: Router) {
+  constructor(private rutubeService: RutubeService) {
   }
   all = this.rutubeService.getHistory();
-
-  goToId(id: string, isAssigned: number) {
-    this.router.navigate([`/messages/${id}/${isAssigned}`]);
-  }
 }

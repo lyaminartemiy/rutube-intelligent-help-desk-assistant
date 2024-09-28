@@ -1,5 +1,7 @@
 <h1 style="font-size: 18px !important;">Мои обращения</h1>
 <div style="display: flex; flex-wrap: wrap; width: 100%; gap: 35px; margin-top: 30px" *ngIf="all | async as alls">
-        <app-appeal *ngFor="let item of alls" [item]="item" [all]="false"></app-appeal>
+    <ng-container *ngFor="let item of alls">
+        <app-appeal [item]="item" [all]="false"></app-appeal>
+    </ng-container>
     <p *ngIf="alls.length===0">Моих обращений не найдено</p>
 </div>
