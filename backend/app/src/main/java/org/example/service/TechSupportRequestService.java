@@ -40,10 +40,12 @@ public class TechSupportRequestService {
         lastMessageFromDialogue.setMessageText(text);
         if (isEditedByTechSupport) {
             lastMessageFromDialogue.setSide(Message.Side.TECH_SUPPORT_EMPLOYEE);
+            lastMessageFromDialogue.setAuthor(request.getAssignedEmployees().getFirst().getFullName());
         }
 
         Message message = sendMessageService.sendMessageFromTechSupport(session, text, authorName);
         request.setStatus(TechSupportRequest.Status.CLOSED);
+        techSupportRequestRepository.save(request);
         return new MessageDto(
                 message.getMessageText(),
                 message.getCreatedAt(),
