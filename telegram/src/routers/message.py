@@ -22,5 +22,5 @@ async def send_dispatcher_message(request: web.Request) -> web.Response:
     chat_id: int = int(request_json["chat_id"])
     text: str = request_json["text"]
 
-    await send_dispatcher_message_to_user(chat_id, text)
-    return web.Response()
+    response = await send_dispatcher_message_to_user(chat_id, text)
+    return web.Response(body=response.model_dump_json(), content_type="application/json")
