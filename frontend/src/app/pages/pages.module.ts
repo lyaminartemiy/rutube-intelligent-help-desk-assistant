@@ -42,6 +42,8 @@ import { HistoryComponent } from './history/history.component';
 import { AppealComponent } from './appeal/appeal.component';
 import { MessagesComponent } from './messages/messages.component';
 import { OneMessageComponent } from './one-message/one-message.component';
+import {FilterPipe} from "../core/pipes/filter.pipe";
+import {SearchPipe} from "../core/pipes/search";
 const customNotifierOptions: NotifierOptions = {
   position: {
     horizontal: {
@@ -131,6 +133,8 @@ const customNotifierOptions: NotifierOptions = {
         MatExpansionModule,
         MatListModule,
         MatSidenavModule,
+        FilterPipe,
+        SearchPipe,
     ],
     exports: [
         HeaderComponent

@@ -80,13 +80,13 @@ constructor(protected activatedRoute: ActivatedRoute, private router: Router,pri
     if(this.message.messageText === this.input.value) {
       mes = {
         text: this.message.messageText,
-        isEditedTechSupport: false
+        isEditedByTechSupport: false
       }
     }
     else {
       mes = {
         text: this.message.messageText,
-        isEditedTechSupport: true
+        isEditedByTechSupport: true
       }
     }
     this.rutubeService.send(this.id(),mes).pipe(take(1)).subscribe({

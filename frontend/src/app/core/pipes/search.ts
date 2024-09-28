@@ -11,7 +11,7 @@ export class SearchPipe implements PipeTransform {
 
     return array.filter(it => {
       const val = it[prop];
-      return (typeof val === "string" && val.toLowerCase().includes(value))
+      return (typeof val === "string" && val.toLowerCase().includes(value.toLowerCase()))
     });
   }
 

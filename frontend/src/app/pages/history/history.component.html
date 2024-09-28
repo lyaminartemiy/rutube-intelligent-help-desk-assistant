@@ -11,7 +11,7 @@
     <p><b>Статус</b></p>
     <p><b>Кол-во участников</b></p>
     <p><b></b></p>
-    <ng-container *ngFor="let emp of alls">
+    <ng-container *ngFor="let emp of alls |search:'title':name.value">
         <p>{{ emp.id }}</p>
         <p>{{ emp.title }}</p>
         <p>{{ emp.isInProgress ? 'В работе' : 'Закрыто' }}</p>

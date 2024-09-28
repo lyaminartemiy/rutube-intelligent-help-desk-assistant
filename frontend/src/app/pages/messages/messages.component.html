@@ -14,7 +14,7 @@
     <div class="input" *ngIf="canIEdit()!==0" [ngClass]="{'center' : canIEdit()===3}">
         <button *ngIf="canIEdit()===1" class="btn" style="background-color: green !important; border-color: green !important;" (click)="aproove()">Одобрить</button>
         <button *ngIf="canIEdit()===1 && !isEditable()" class="btn" (click)="isEditable.set(true)">Редактировать</button>
-        <button class="btn" (click)="isEditable.set(false)" *ngIf="canIEdit()===1 && isEditable()">Отменить редактировать</button>
+        <button class="btn" (click)="isEditable.set(false)" *ngIf="canIEdit()===1 && isEditable()">Отменить редактирование</button>
         <button class="btn" (click)="assign(id())" *ngIf="canIEdit()===3">Присоединиться</button>
 
         <!--        <textarea class="my-input" placeholder="Сообщение"  (keyup)="onSubmit($event)" [formControl]="input"></textarea>-->

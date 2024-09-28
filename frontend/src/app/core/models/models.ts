@@ -93,5 +93,5 @@ export enum Role {
 }
 export interface SendMessage {
     text: string,
-    isEditedTechSupport: boolean
+    isEditedByTechSupport: boolean
 }
