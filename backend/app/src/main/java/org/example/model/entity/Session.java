@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -51,8 +50,8 @@ public class Session {
     @Nullable
     ZonedDateTime closedAt;
 
-    @OneToOne(mappedBy = "session")
-    TechSupportRequest request;
+    @OneToMany(mappedBy = "session")
+    List<TechSupportRequest> requests;
 
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
     List<Message> messages;
