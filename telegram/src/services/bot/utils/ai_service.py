@@ -11,4 +11,5 @@ async def post_question_in_ai_service(question: str) -> None:
             json={"question": question},
             headers={"Content-Type": "application/json"},
         ) as response:
+            print("RESPONSE:", response.json())
             return response.json()
