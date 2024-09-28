@@ -36,7 +36,7 @@ async def handle_new_report_problem(message: types.Message, state: FSMContext) -
 async def handle_problem_answer_from_user(
     message: types.Message, state: FSMContext
 ) -> None:
-    ai_response = await post_question_in_ai_service(message=message, state=state)
+    ai_response = await post_question_in_ai_service(question=message.text)
     await EventsLogger.log_user_message(message=message, ai_text=ai_response["answer"])
 
 
