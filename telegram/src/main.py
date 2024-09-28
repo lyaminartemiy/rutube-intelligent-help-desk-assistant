@@ -10,7 +10,7 @@ from loguru import logger
 
 async def webserver_start():
     app = web.Application()
-    app.router.add_post("api/send-message/dp", send_dispatcher_message)
+    app.router.add_post("/api/send-message/dp", send_dispatcher_message)
 
     runner = web.AppRunner(app)
     await runner.setup()
