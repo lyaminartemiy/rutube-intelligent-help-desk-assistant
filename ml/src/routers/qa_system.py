@@ -19,7 +19,8 @@ router = fastapi.APIRouter()
 @router.post("/predict")
 async def predict_sentiment(
     request: Request,
-    prompt_template: ChatPromptTemplate = Depends(lifespan.get_prompt_template),
+    question_prompt_template: ChatPromptTemplate = Depends(lifespan.get_question_prompt_template),
+    answer_prompt_template: ChatPromptTemplate = Depends(lifespan.get_answer_prompt_template),
     doc_retriever: Chroma = Depends(lifespan.get_docs_retriever),
     llm: ChatOpenAI = Depends(lifespan.get_llm),
     cross_encoder: CrossEncoder = Depends(lifespan.get_cross_encoder),
@@ -28,7 +29,8 @@ async def predict_sentiment(
     query_params = {"question": request.question}
     qa_response = query_system(
         query_params=query_params,
-        prompt_template=prompt_template,
+        question_prompt_template=question_prompt_template,
+        answer_prompt_template=answer_prompt_template,
         doc_retriever=doc_retriever,
         llm=llm,
         cross_encoder=cross_encoder,

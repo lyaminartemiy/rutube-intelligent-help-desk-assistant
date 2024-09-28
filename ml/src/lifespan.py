@@ -44,8 +44,11 @@ async def lifespan(app: fastapi.FastAPI):
     app.state.embeddings_model = embeddings_model
     logger.info("Модель для создания эмбеддингов загружена")
 
-    app.state.prompt_template = ChatPromptTemplate.from_template(
-        PromptConfig.PROMPT_TEMPLATE
+    app.state.answer_prompt_template = ChatPromptTemplate.from_template(
+        PromptConfig.ANSWER_PROMPT_TEMPLATE
+    )
+    app.state.question_prompt_template = ChatPromptTemplate.from_template(
+        PromptConfig.QUESTION_PROMPT_TEMPLATE
     )
     logger.info("Промпт создан")
 
@@ -53,7 +56,7 @@ async def lifespan(app: fastapi.FastAPI):
     app.state.docs_retriever = Chroma(
         persist_directory=os.getenv("CHROMA_DB"),
         embedding_function=embeddings_model,
-    ).as_retriever(search_kwargs={"k": QASystemConfig.CANDIDATES_COUNT})
+    ).as_retriever(search_kwargs={"k": QASystemConfig.CHROMA_CANDIDATES_COUNT})
     logger.info("Хрома создана")
 
     source_faq = pd.read_parquet(os.getenv("RUTUBE_DOCUMENTS_PATH"))
@@ -75,8 +78,12 @@ def get_embeddings_model(request: fastapi.Request) -> OpenAIEmbeddings:
     return request.app.state.embeddings_model
 
 
-def get_prompt_template(request: fastapi.Request) -> ChatPromptTemplate:
-    return request.app.state.prompt_template
+def get_question_prompt_template(request: fastapi.Request) -> ChatPromptTemplate:
+    return request.app.state.question_prompt_template
+
+
+def get_answer_prompt_template(request: fastapi.Request) -> ChatPromptTemplate:
+    return request.app.state.answer_prompt_template
 
 
 def get_docs_retriever(request: fastapi.Request) -> Chroma:

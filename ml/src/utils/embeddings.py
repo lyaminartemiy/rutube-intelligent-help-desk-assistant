@@ -16,8 +16,9 @@ def generate_embeddings(
 
     faq = source_faq.apply(
         lambda x: Document(
-            page_content=x["Вопрос из БЗ"],
+            page_content=f"{x['Вопрос из БЗ']}",
             metadata={
+                "question": x["Вопрос из БЗ"],
                 "answer": x["Ответ из БЗ"],
                 "class_1": x["Классификатор 1 уровня"],
                 "class_2": x["Классификатор 2 уровня"],
