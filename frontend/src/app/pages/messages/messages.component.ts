@@ -1,11 +1,10 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {ActivatedRoute, ActivatedRouteSnapshot, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MessageDto, SendMessage, Side} from "../../core/models/models";
 import {map, take} from "rxjs";
 import {RutubeService} from "../../core/services/rutube.service";
 import {NotifierService} from "angular-notifier";
-import {F} from "@angular/cdk/keycodes";
 
 @Component({
   selector: 'app-messages',
@@ -102,4 +101,10 @@ constructor(protected activatedRoute: ActivatedRoute, private router: Router,pri
       }})
     
   }
+
+  edit() {
+    if(this.message.side===Side.BOT || this.message.side===Side.TECH_SUPPORT_EMPLOYEE) this.isEditable.set(true)
+  }
+
+  protected readonly Side = Side;
 }

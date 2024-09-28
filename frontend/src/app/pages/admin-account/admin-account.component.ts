@@ -1,14 +1,31 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, signal} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Observable, take} from "rxjs";
-import {AdminEmployeeStats, AdminRequestsStats, EmployeeDto, Role, UserProfileDto} from "../../core/models/models";
+import {
+  AdminEmployeeStats,
+  AdminRequestsStats,
+  AIProcessedRequestPercentageChart,
+  EmployeeDto,
+  Role,
+  UserProfileDto
+} from "../../core/models/models";
 import {RutubeService} from "../../core/services/rutube.service";
 import {NotifierService} from "angular-notifier";
+import {Chart} from "chart.js";
+import * as moment from "moment";
 export enum Menu {
   My,
   Employee,
   Messages,
   Add
+}
+interface ChartData {
+  name: string,
+  value: number,
+}
+interface Data {
+  name: string,
+  series: ChartData[],
 }
 @Component({
   selector: 'app-admin-account',
@@ -23,8 +40,24 @@ export class AdminAccountComponent implements OnInit{
   adminEmployees: Observable<AdminEmployeeStats> = this.rutubeService.getAdminEmployees();
   adminStats: Observable<AdminRequestsStats> = this.rutubeService.getAdminStats();
   myEmployee: Observable<EmployeeDto[]> = this.rutubeService.getMyEmployees();
+  chartAll: AIProcessedRequestPercentageChart[];
+  chartEvery: AIProcessedRequestPercentageChart[];
+  chartJsAll: any;
+  chartDataAll: ChartData[] = [];
+  chartDataAllData: Data[] = [];
+  chartDataEvery: ChartData[] = [];
+  chartDataEveryData: Data[] = [];
+  chartJsEvery: any;
+  colorScheme = {
+    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+  };
+    customColors = (value: any) => {
+        console.log(value);
+        return "#ffffff";
+    }
 
-  constructor( private fb: FormBuilder,protected rutubeService: RutubeService, private notifierService: NotifierService) {
+  constructor(   private elementRef: ElementRef,
+  private fb: FormBuilder,protected rutubeService: RutubeService, private notifierService: NotifierService) {
   }
   addForm: FormGroup;
   ngOnInit(): void {
@@ -32,7 +65,9 @@ export class AdminAccountComponent implements OnInit{
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email,Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]],
       role: [Role.ADMIN]
-    })
+    });
+    this.getChartAll();
+    this.getChartEvery();
   }
 
   get name(): any {
@@ -44,6 +79,38 @@ export class AdminAccountComponent implements OnInit{
   };
 
   protected readonly Role = Role;
+  getChartAll() {
+    this.rutubeService.getAdminChartAll().subscribe(res => {
+      if(res) this.chartEvery = res;
+      res.forEach(d => {
+        this.chartDataAll.push({
+          value: d.percentage,
+          name: moment(d.dateTime).utc().format('DD.MM HH:mm')
+        })
+      });
+      this.chartDataAllData = [JSON.parse(JSON.stringify({
+        name: '',
+        series: this.chartDataAll
+      }))]
+    })
+  }
+  getChartEvery() {
+    this.rutubeService.getAdminChartEvery().subscribe(res => {
+      if(res) this.chartEvery = res;
+      res.forEach(d => {
+        this.chartDataEvery.push({
+          value: d.percentage,
+          name: moment(d.dateTime).utc().format('DD.MM HH:mm')
+        })
+      });
+      this.chartDataEveryData = [JSON.parse(JSON.stringify({
+        name: '',
+        series: this.chartDataEvery
+      }))]
+    })
+    
+  }
+  
 
   addEmployee() {
     if(this.addForm.valid) {
