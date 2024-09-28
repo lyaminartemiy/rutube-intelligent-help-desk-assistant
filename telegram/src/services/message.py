@@ -87,6 +87,7 @@ async def send_dispatcher_message_to_user(
         text=None,
         created_at=None,
         is_helpful=None,
+        ai_text=None,
     )
 
 

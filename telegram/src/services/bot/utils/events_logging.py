@@ -40,6 +40,7 @@ def _create_bot_message_model(message: types.Message) -> schemas.UpdateMessageDT
         chat_id=str(message.chat.id),
         message_id=str(message.message_id),
         text=None,
+        ai_text=None,
         created_at=None,
         is_helpful=None,
     )
@@ -56,6 +57,7 @@ def _create_feedback_message(
         chat_id=str(chat_id),
         message_id=str(message_id),
         text=None,
+        ai_text=None,
         created_at=None,
         is_helpful=is_positive,
     )
