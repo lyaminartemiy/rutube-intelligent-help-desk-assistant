@@ -1,4 +1,5 @@
 FROM node:alpine
+ARG NG_CLI_ANALYTICS="false"
 
 WORKDIR /usr/src/app
 

@@ -1,42 +1,124 @@
 from typing import Any, Dict
 
-from config.config import QASystemConfig
+import torch
+from config.config import QASystemConfig, PromptConfig
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
+from langchain.prompts import ChatPromptTemplate
 from langchain_chroma import Chroma
-from langchain_core.runnables import (RunnableLambda, RunnableParallel,
-                                      RunnablePassthrough)
-from langchain_openai import ChatOpenAI
+from langchain_core.runnables import (
+    RunnableLambda,
+    RunnableParallel,
+    RunnablePassthrough,
+)
 from sentence_transformers import CrossEncoder
-from utils.qa_system import extract_documents, rerank_documents
+from utils.qa_system import rerank_documents
+
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from config.config import ModelsConfig, PromptConfig
 
 
 def query_system(
     query_params: Dict[str, Any],
-    prompt_template: ChatPromptTemplate,
-    docs_retriever: Chroma,
-    llm: ChatOpenAI,
+    question_prompt_template: ChatPromptTemplate,
+    answer_prompt_template: ChatPromptTemplate,
+    doc_retriever: Chroma,
+    tokenizer: AutoTokenizer,
+    model: AutoModelForCausalLM,
     cross_encoder: CrossEncoder,
     output_parser: StrOutputParser,
 ) -> Dict[str, Any]:
     """Query the question answering system."""
     question = query_params.get("question", "")
 
-    docs_retriever = RunnableParallel(
-        {"docs_context": docs_retriever, "question": RunnablePassthrough()}
+    # fomalize_question_chain = RunnableLambda(
+    #     lambda x: fomalize_question(
+    #         x, question_prompt_template=question_prompt_template, llm=llm
+    #     )
+    # )
+
+    documents_retrieval_chain = RunnableParallel(
+        {"docs_context": doc_retriever, "question": RunnablePassthrough()},
     )
-    rerank = RunnableLambda(
+    
+    rerank_documents_chain = RunnableLambda(
         lambda x: rerank_documents(
-            info=x, k=3, cross_encoder=cross_encoder
+            x, k=QASystemConfig.RERANKER_CANDIDATES_COUNT, cross_encoder=cross_encoder
         )
     )
-    extract_doc = RunnableLambda(extract_documents)
 
-    docs_retrieval_chain = docs_retriever | rerank
-    model_chain = extract_doc | prompt_template | llm | output_parser
-
-    complete_chain = docs_retrieval_chain | RunnablePassthrough.assign(
-        result=model_chain
+    gemma_generate_chain = RunnableLambda(
+        lambda x: gemma_inference(
+            x, tokenizer=tokenizer, model=model
+        )
     )
+
+    prepere_candidates_chain = (
+        # fomalize_question_chain
+        documents_retrieval_chain
+        | rerank_documents_chain
+    )
+
+    complete_chain = prepere_candidates_chain | RunnablePassthrough.assign(
+        result=gemma_generate_chain
+    )
+
     result = complete_chain.invoke(question)
-    return result["result"]
+    return result
+
+
+# def gemma_inference(info, tokenizer, model, prompt_template: ChatPromptTemplate):
+#     question = info["question"]
+#     docs_context = info["docs_context"]
+
+#     prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
+
+#     input_ids = tokenizer.apply_chat_template(
+#         [{"role": "user", "content": prompt}],
+#         truncation=True,
+#         add_generation_prompt=True,
+#         return_tensors="pt"
+#     ).to("cuda" if torch.cuda.is_available() else "cpu")
+#     outputs = model.generate(
+#         input_ids=input_ids,
+#         max_new_tokens=512,
+#         do_sample=True,
+#         temperature=0.5,
+#         top_k=50,
+#         top_p=0.95
+#     )
+#     decoded_output = tokenizer.batch_decode(outputs, skip_special_tokens=False)[0]
+#     cleaned_output = decoded_output.replace('<bos>', '').replace('<start_of_turn>', '').replace('<end_of_turn>', '').strip()
+#     answer = cleaned_output.split('model')[-1].strip()
+#     print("ОТВЕТ МОДЕЛИ:", answer)
+#     info["result"] = answer
+#     return answer
+
+
+def gemma_inference(info, tokenizer, model):
+    question = info["question"]
+    docs_context = info["docs_context"]
+
+    prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
+    message = {"role": "user", "content": prompt}
+    
+    input_ids = tokenizer.apply_chat_template(message, return_tensors="pt", return_dict=True).to("cuda")
+    outputs = model.generate(**input_ids, max_new_tokens=256)
+    
+    info["result"] = outputs
+    return outputs
+
+
+# def fomalize_question(
+#     question,
+#     question_prompt_template: ChatPromptTemplate,
+#     llm: ChatOpenAI,
+# ) -> str:
+#     """Formalize the question."""
+#     formalized_question_prompt = question_prompt_template.format(question=question)
+#     response = llm(formalized_question_prompt)
+    
+#     print(f"Исходный вопрос: {question}")
+#     print(f"Формализованный вопрос: {response.content}")
+    
+#     return response.content
