@@ -26,6 +26,9 @@ RUN apt-get update \
 # Set the working directory in the container
 WORKDIR /app
 
+# Create a volume for storing models
+VOLUME ["/root/.cache/huggingface"]
+
 # Copy the requirements file into the container
 COPY requirements.txt .
 
