@@ -7,6 +7,7 @@ import org.example.model.entity.Message;
 import org.example.model.entity.Session;
 import org.example.model.entity.TechSupportRequest;
 import org.example.repository.EmployeeRepository;
+import org.example.repository.MessageRepository;
 import org.example.repository.SessionRepository;
 import org.example.repository.TechSupportRequestRepository;
 import org.example.usecase.telegram.impl.SendMessageService;
@@ -26,10 +27,14 @@ public class TechSupportRequestService {
     private final TechSupportRequestRepository techSupportRequestRepository;
     private final SendMessageService sendMessageService;
     private final EmployeeRepository employeeRepository;
+    private final MessageRepository messageRepository;
 
 
     public void closeRequestById(Long requestId) {
-        repository.findById(requestId).get().setStatus(TechSupportRequest.Status.CLOSED);
+        TechSupportRequest request = repository.findById(requestId).get();
+        request.setStatus(TechSupportRequest.Status.CLOSED);
+        techSupportRequestRepository.save(request);
+        sendMessageToDialogue(requestId, request.getSession().getMessages().getLast().getMessageText(), "Бот", false);
     }
 
     public MessageDto sendMessageToDialogue(Long requestId, String text, String authorName, Boolean isEditedByTechSupport) {
@@ -41,6 +46,7 @@ public class TechSupportRequestService {
         if (isEditedByTechSupport) {
             lastMessageFromDialogue.setSide(Message.Side.TECH_SUPPORT_EMPLOYEE);
             lastMessageFromDialogue.setAuthor(request.getAssignedEmployees().getFirst().getFullName());
+            messageRepository.save(lastMessageFromDialogue);
         }
 
         Message message = sendMessageService.sendMessageFromTechSupport(session, text, authorName);
