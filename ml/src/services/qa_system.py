@@ -100,13 +100,20 @@ def gemma_inference(info, tokenizer, model):
     docs_context = info["docs_context"]
 
     prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
-    message = {"role": "user", "content": prompt}
+    # message = {"role": "user", "content": prompt}
+    encoded_input = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to("cuda")
+
+    output = model.generate(
+        **encoded_input,
+        num_beams=2,
+        do_sample=True,
+        max_new_tokens=512,
+    )
+
+    decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
     
-    input_ids = tokenizer.apply_chat_template(message, return_tensors="pt", return_dict=True).to("cuda")
-    outputs = model.generate(**input_ids, max_new_tokens=256)
-    
-    info["result"] = outputs
-    return outputs
+    info["result"] = decoded_output
+    return decoded_output
 
 
 # def fomalize_question(
