@@ -85,7 +85,7 @@ constructor(protected activatedRoute: ActivatedRoute, private router: Router,pri
     }
     else {
       mes = {
-        text: this.message.messageText,
+        text: this.input.value as string,
         isEditedByTechSupport: true
       }
     }
