@@ -1,6 +1,5 @@
 package org.example.repository;
 
-import org.example.model.entity.Message;
 import org.example.model.entity.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,18 +10,4 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @Query("select s from Session s where s.chatId = ?1 and s.status = ?2 order by s.createdAt asc")
     List<Session> findByChatIdAndStatus(String chatId, Session.Status status);
 
-    @Query("select m.session from Message m where m.messageId = ?1")
-    Session findOneByMessageId(String messageId);
-    Long countByStatusAndRequestNotNull(Session.Status status);
-
-    Long countByStatus(Session.Status status);
-
-    Long countByStatusAndRequestNull(Session.Status status);
-
-    List<Session> findAllByStatusAndRequestNull(Session.Status status);
-
-    List<Session> findAllByStatus(Session.Status status);
-
-    @Query("select s from Session s inner join s.messages messages where messages.side = ?1")
-    List<Session> findByMessages_Side(Message.Side side);
 }
