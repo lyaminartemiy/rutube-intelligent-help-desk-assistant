@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -48,6 +49,11 @@ public class TechSupportRequest {
     Status status;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "employee_tech_support_request", // Name of the join table
+            joinColumns = @JoinColumn(name = "tech_support_request_id"), // Foreign key for TechSupportRequest
+            inverseJoinColumns = @JoinColumn(name = "employee_id") // Foreign key for Employee
+    )
     List<Employee> assignedEmployees;
 
     public enum Status {

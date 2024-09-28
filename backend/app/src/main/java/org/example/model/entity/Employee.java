@@ -54,7 +54,7 @@ public class Employee implements UserDetails {
 
     String profilePicS3Id;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "assignedEmployees", fetch = FetchType.EAGER)
     List<TechSupportRequest> requestsInProgress;
 
     @Override
