@@ -11,7 +11,7 @@ from langchain_core.runnables import (
 )
 from langchain_openai import ChatOpenAI
 from sentence_transformers import CrossEncoder
-from utils.qa_system import extract_documents, rerank_documents
+from utils.qa_system import rerank_documents
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from config.config import ModelsConfig, PromptConfig
@@ -31,20 +31,19 @@ def query_system(
     documents_retrieval_chain = RunnableParallel(
         {"docs_context": doc_retriever, "question": RunnablePassthrough()}
     )
+    
     rerank_documents_chain = RunnableLambda(
         lambda x: rerank_documents(
             x, k=QASystemConfig.CANDIDATES_COUNT, cross_encoder=cross_encoder
         )
     )
-    prepere_candidates_chain = documents_retrieval_chain | rerank_documents_chain
 
-    model_chain = (
-        RunnableLambda(extract_documents) | prompt_template | llm | output_parser
-    )
+    prepere_candidates_chain = documents_retrieval_chain | rerank_documents_chain
+    model_chain = prompt_template | llm | output_parser
 
     complete_chain = prepere_candidates_chain | RunnablePassthrough.assign(
         result=model_chain
     )
 
     result = complete_chain.invoke(question)
-    return result["result"]
+    return result

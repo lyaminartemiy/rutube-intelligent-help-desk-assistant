@@ -1,3 +1,4 @@
+import pandas as pd
 from loguru import logger
 import contextlib
 import os
@@ -55,7 +56,10 @@ async def lifespan(app: fastapi.FastAPI):
     ).as_retriever(search_kwargs={"k": QASystemConfig.CANDIDATES_COUNT})
     logger.info("Хрома создана")
 
-    generate_embeddings(embeddings_model=embeddings_model)
+    source_faq = pd.read_parquet(os.getenv("RUTUBE_DOCUMENTS_PATH"))
+    logger.info("Исходные данные загружены")
+
+    generate_embeddings(embeddings_model=embeddings_model, source_faq=source_faq)
     logger.info("Эмбеддинги сгенерированы")
 
     app.state.llm = ChatOpenAI(model_name=ModelsConfig.LLM_MODEL_NAME)
