@@ -48,11 +48,13 @@ public class TechSupportRequestService {
 
     public void assignEmployeeToRequest(Long requestId, Employee employee) {
         TechSupportRequest request = techSupportRequestRepository.findById(requestId).get();
-        request.getAssignedEmployees().add(employee);
-        request.setStatus(TechSupportRequest.Status.IN_PROGRESS);
-        List<TechSupportRequest> requestsInProgress = employee.getRequestsInProgress();
-        requestsInProgress.add(request);
-        employeeRepository.save(employee);
-        techSupportRequestRepository.save(request);
+        if (!request.getAssignedEmployees().contains(employee)) {
+            request.getAssignedEmployees().add(employee);
+            request.setStatus(TechSupportRequest.Status.IN_PROGRESS);
+            List<TechSupportRequest> requestsInProgress = employee.getRequestsInProgress();
+            requestsInProgress.add(request);
+            employeeRepository.save(employee);
+            techSupportRequestRepository.save(request);
+        }
     }
 }
