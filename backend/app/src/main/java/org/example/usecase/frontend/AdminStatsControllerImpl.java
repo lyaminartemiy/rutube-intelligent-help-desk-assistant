@@ -4,9 +4,7 @@ import org.example.model.dto.AIProcessedRequestPercentageChart;
 import org.example.model.dto.AdminEmployeeStats;
 import org.example.model.dto.AdminRequestsStats;
 import org.example.model.dto.DailyPercentageOfRequestsHandledByAIChartData;
-import org.example.repository.EmployeeRepository;
 import org.example.service.AdminStatsService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -80,9 +78,9 @@ public class AdminStatsControllerImpl implements AdminStatsController {
     }
 
     @Override
-    @GetMapping("/chart/daily-percentage-of-requests-handled-by-ai")
-    public List<DailyPercentageOfRequestsHandledByAIChartData> getDailyPercentageOfRequestsHandledByAIChart() {
-        return adminStatsService.getDailyPercentageOfRequestsHandledByAIChart();
+    @GetMapping("/chart/plot-percentage-of-requests-handled-by-ai")
+    public List<DailyPercentageOfRequestsHandledByAIChartData> getPlotPercentageOfRequestsHandledByAIChart() {
+        return adminStatsService.getPlotPercentageOfRequestsHandledByAIChart();
     }
 
     @Override

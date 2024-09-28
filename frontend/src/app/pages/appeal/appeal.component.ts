@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TechSupportRequestDto} from "../../core/models/models";
 import {RutubeService} from "../../core/services/rutube.service";
 import {take} from "rxjs";
@@ -13,6 +13,7 @@ import {Router} from "@angular/router";
 export class AppealComponent {
   @Input() item: TechSupportRequestDto;
   @Input() all: boolean;
+  @Output() close = new EventEmitter();
   constructor(private rutubeService: RutubeService, private notifierService:NotifierService, private router: Router) {
   }
 
@@ -20,7 +21,7 @@ export class AppealComponent {
         this.rutubeService.close(id).pipe(take(1)).subscribe({
           next: (r) => {
             this.notifierService.notify('success', 'Обращение успешно закрыто!');
-
+            this.close.emit();
           },
           error: (err) => {
             console.log(err)
