@@ -27,6 +27,9 @@ public class TechSupportRequestService {
 
     public MessageDto sendMessageToDialogue(Long requestId, String text, String authorName) {
         Session session = techSupportRequestRepository.findById(requestId).get().getSession();
+        Message lastMessageFromDialogue = session.getMessages().getLast();
+        assert lastMessageFromDialogue.getSide().equals(Message.Side.BOT);
+        lastMessageFromDialogue.setMessageText(text);
         Message message = sendMessageService.sendMessageFromTechSupport(session, text, authorName);
         return new MessageDto(
                 message.getMessageText(),
