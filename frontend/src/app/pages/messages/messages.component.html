@@ -13,7 +13,7 @@
     
     <div class="input" *ngIf="canIEdit()!==0" [ngClass]="{'center' : canIEdit()===3}">
         <button *ngIf="canIEdit()===1" class="btn" style="background-color: green !important; border-color: green !important;" (click)="aproove()">Одобрить</button>
-        <button style="background-color: #006a7b !important; border-color: #006a7b !important" *ngIf="canIEdit()===1 && !isEditable()" class="btn" (click)="isEditable.set(true)">Редактировать</button>
+        <button style="background-color: #006a7b !important; border-color: #006a7b !important" *ngIf="canIEdit()===1 && !isEditable()" class="btn" (click)="edit()">Редактировать</button>
         <button class="btn" (click)="isEditable.set(false)" *ngIf="canIEdit()===1 && isEditable()">Отменить редактирование</button>
         <button class="btn" (click)="assign(id())" *ngIf="canIEdit()===3">Присоединиться</button>
 
