@@ -64,23 +64,22 @@ async def send_bot_message_to_user(
 async def send_dispatcher_message_to_user(
     chat_id: str,
     text: str,
-    is_done: bool,
 ) -> schemas.UpdateMessageDTO:
     """Send a message from the dispatcher to a user."""
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(
+        types.InlineKeyboardButton(
+            text=Phrase.POSITIVE_FEEDBACK, callback_data="positive_feedback"
+        ),
+        types.InlineKeyboardButton(
+            text=Phrase.NEGATIVE_FEEDBACK, callback_data="negative_feedback"
+        ),
+    )
     message = await bot.send_message(
         chat_id=int(chat_id),
         text=text,
+        reply_markup=keyboard,
     )
-
-    state = dp.current_state(chat=chat_id, user=chat_id)
-    await state.update_data(last_message_id=message.message_id)
-
-    if is_done:
-        await state.finish()
-        message = await bot.send_message(
-            chat_id=int(chat_id),
-            text=Phrase.NO_REPONSE,
-        )
 
     return schemas.UpdateMessageDTO(
         chat_id=str(message.chat.id),
