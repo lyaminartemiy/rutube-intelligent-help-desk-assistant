@@ -10,6 +10,8 @@ async def post_question_in_ai_service(question: str) -> None:
             url="http://176.109.100.31:8001/predict",
             json={"question": question},
             headers={"Content-Type": "application/json"},
+            timeout=120 * 1000,
         ) as response:
-            print("RESPONSE:", response.json())
-            return response.json()
+            response_json = await response.json()
+            print("RESPONSE:", response_json)
+            return response_json
