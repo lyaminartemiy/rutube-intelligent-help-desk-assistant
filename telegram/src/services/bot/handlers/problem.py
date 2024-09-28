@@ -10,6 +10,7 @@ from services.bot.states.utils import (
 from services.bot.utils.events_logging import EventsLogger
 from services.bot.utils.keyboards import Keyboard
 from services.bot.utils.phrases import Phrase
+from services.bot.utils.ai_service import post_question_in_ai_service
 from services.message import (
     send_ai_message_to_user_mock,
     send_dispather_message_to_user_mock,
@@ -35,8 +36,8 @@ async def handle_new_report_problem(message: types.Message, state: FSMContext) -
 async def handle_problem_answer_from_user(
     message: types.Message, state: FSMContext
 ) -> None:
-    await EventsLogger.log_user_message(message=message, ai_text="TODO: заглушка")
-    # await send_ai_message_to_user_mock(message=message, state=state)
+    ai_response = await post_question_in_ai_service(question=message.text)
+    await EventsLogger.log_user_message(message=message, ai_text=ai_response["answer"])
 
 
 @dp.callback_query_handler(

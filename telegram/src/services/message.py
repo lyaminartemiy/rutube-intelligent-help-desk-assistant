@@ -63,6 +63,7 @@ async def send_bot_message_to_user(
 
 async def send_dispatcher_message_to_user(
     chat_id: str,
+    message_id: str,
     text: str,
 ) -> schemas.UpdateMessageDTO:
     """Send a message from the dispatcher to a user."""
@@ -79,6 +80,7 @@ async def send_dispatcher_message_to_user(
         chat_id=int(chat_id),
         text=text,
         reply_markup=keyboard,
+        reply_to_message_id=message_id,
     )
 
     return schemas.UpdateMessageDTO(
@@ -87,6 +89,7 @@ async def send_dispatcher_message_to_user(
         text=None,
         created_at=None,
         is_helpful=None,
+        ai_text=None,
     )
 
 
