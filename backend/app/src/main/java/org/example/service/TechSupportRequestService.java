@@ -6,10 +6,13 @@ import org.example.model.entity.Employee;
 import org.example.model.entity.Message;
 import org.example.model.entity.Session;
 import org.example.model.entity.TechSupportRequest;
+import org.example.repository.EmployeeRepository;
 import org.example.repository.SessionRepository;
 import org.example.repository.TechSupportRequestRepository;
 import org.example.usecase.telegram.impl.SendMessageService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ public class TechSupportRequestService {
     private final SessionRepository sessionRepository;
     private final TechSupportRequestRepository techSupportRequestRepository;
     private final SendMessageService sendMessageService;
+    private final EmployeeRepository employeeRepository;
 
 
     public void closeRequestById(Long requestId) {
@@ -45,6 +49,9 @@ public class TechSupportRequestService {
     public void assignEmployeeToRequest(Long requestId, Employee employee) {
         TechSupportRequest request = techSupportRequestRepository.findById(requestId).get();
         request.getAssignedEmployees().add(employee);
+        List<TechSupportRequest> requestsInProgress = employee.getRequestsInProgress();
+        requestsInProgress.add(request);
+        employeeRepository.save(employee);
         techSupportRequestRepository.save(request);
     }
 }
