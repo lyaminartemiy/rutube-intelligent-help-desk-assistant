@@ -65,7 +65,7 @@ public class UpdateMessageService {
                         if (currentSession.getRequest() == null) {
                             AiResponse aiResponse = aiService.getAnswerFromAi(currentSession, userMessageToAnswer);
                             messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
-                            messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
+//                            messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
                         }
 //                        if (messageSide == Message.Side.BOT) {
 //                            TechSupportRequest newRequest = TechSupportRequest.builder()
