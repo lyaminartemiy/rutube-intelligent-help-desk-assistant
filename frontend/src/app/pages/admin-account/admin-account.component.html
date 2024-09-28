@@ -103,7 +103,7 @@
                 <p><b>В работе</b></p>
                 <p><b>Обработано</b></p>
                 <p><b>Онлайн</b></p>
-                <ng-container *ngFor="let emp of empl">
+                <ng-container *ngFor="let emp of empl |search:'fullName':employeeName.value">
                     <p><b>{{ emp.id }}</b></p>
                     <p><b>{{ emp.fullName }}</b></p>
                     <p><b>{{ emp.inProgressRequestCount }}</b></p>
@@ -119,13 +119,33 @@
         <div class="contact-info">
             <h1>Процент обращений, обработанных ИИ каждый день</h1>
             <div class="info">
-                <img src="assets/12.PNG" style="width: 500px">
+                    <div class="chart-container" style="width:500px;height:300px; margin-top: 20px" *ngIf="chartDataAll.length">
+                        <ngx-charts-line-chart
+                                [results]="chartDataEveryData"
+                                [xAxis]="true"
+                                [yAxis]="true"
+                                [showGridLines]="false"
+                                [customColors]="customColors"
+                        >
+                        </ngx-charts-line-chart>
+                </div>
+                <p *ngIf="chartDataEvery.length<=1">Данные не найдены</p>
             </div>
         </div>
         <div class="contact-info">
             <h1>Процент обращений, обработанных ИИ за все время</h1>
             <div class="info">
-                <img src="assets/12.PNG" style="width: 500px">
+            <div class="chart-container" style="width:500px;height:300px; margin-top: 20px" *ngIf="chartDataAll.length>1">
+                <ngx-charts-line-chart
+                        [results]="chartDataAllData"
+                        [xAxis]="true"
+                        [yAxis]="true"
+                        [showGridLines]="false"
+                        [customColors]="customColors"
+                >
+                </ngx-charts-line-chart>
+            </div>
+            <p *ngIf="chartDataAll.length<=1">Данные не найдены</p>
             </div>
         </div>
     </section>

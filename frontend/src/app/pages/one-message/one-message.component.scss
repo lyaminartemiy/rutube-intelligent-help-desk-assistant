@@ -8,10 +8,10 @@
     .text {
       position: relative;
       display: flex;
-      max-width: 60%;
+      max-width: 80%;
       min-width: 30%;
       width: max-content;
-      background-color: #00A1E7;
+      background-color: #006a7b;
       padding: 25px 45px 10px 10px;
       color: white;
       border-radius: 20px;
@@ -20,6 +20,10 @@
         position: absolute;
         left: 10px;
         top: 5px;
+      }
+      p {
+        color: white !important;
+        font-size: 15px !important;
       }
       small:last-of-type {
         color: white !important;
@@ -35,15 +39,16 @@
     .text {
       position: relative;
       display: flex;
-      max-width: 60%;
+      max-width: 80%;
       width: max-content;
-      background-color: #c6a903;
+      background-color: #006a7b;
       padding: 25px 45px 10px 10px;
       color: white;
       min-width: 30%;
       border-radius: 20px;
       p {
         color: white !important;
+        font-size: 15px !important;
       }
       small:first-of-type {
         color: white !important;
@@ -84,6 +89,10 @@
         position: absolute;
         right: 5px;
         bottom: 5px;
+      }
+      p {
+        color: white !important;
+        font-size: 15px !important;
       }
     }
   }
