@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.model.dto.TechSupportRequestDto;
 import org.example.model.entity.Employee;
 import org.example.model.entity.TechSupportRequest;
+import org.example.repository.EmployeeRepository;
 import org.example.repository.TechSupportRequestRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class TechSupportRequestListService {
 
     private final TechSupportRequestRepository repository;
+    private final EmployeeRepository employeeRepository;
 
     public List<TechSupportRequestDto> getAllOpenRequests() {
         return repository.findAll().stream()
@@ -40,7 +42,9 @@ public class TechSupportRequestListService {
     }
 
     public List<TechSupportRequestDto> getAssignedRequestsByEmployee(String username) {
-        return repository.findByAssignedEmployees_Username(username).stream()
+        Employee employee = employeeRepository.getEmployeesByUsername(username);
+
+        return employee.getRequestsInProgress().stream()
                 .filter(request -> request.getStatus().equals(TechSupportRequest.Status.IN_PROGRESS))
                 .map(request -> new TechSupportRequestDto(
                                 request.getTitle(),
