@@ -104,10 +104,12 @@ def gemma_inference(info, tokenizer, model):
     encoded_input = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to("cuda")
 
     output = model.generate(
-        **encoded_input,
-        num_beams=2,
+        input_ids=encoded_input,
         do_sample=True,
         max_new_tokens=512,
+        temperature=0.5,
+        top_k=50,
+        top_p=0.95,
     )
 
     decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
