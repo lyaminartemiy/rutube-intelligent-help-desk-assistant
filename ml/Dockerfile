@@ -1,18 +1,24 @@
-# Use the Alpine Linux base image
-FROM python:3.11-alpine
+# Use an Ubuntu-based image with CUDA
+FROM nvidia/cuda:11.8.0-base-ubuntu20.04
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Install system dependencies
-RUN apk update \
-    && apk add --no-cache \
-        build-base \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
         libffi-dev \
-        openssl-dev \
+        libssl-dev \
         bash \
-    && rm -rf /var/cache/apk/*
+        python3.11 \
+        python3-pip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Set the working directory in the container
 WORKDIR /app/src
@@ -20,16 +26,14 @@ WORKDIR /app/src
 # Copy the requirements file into the container
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
 # Copy the rest of the application code into the container
+COPY .env /app/.env
 COPY src /app/src
 
 # Set the working directory to src
 WORKDIR /app/src
 
-EXPOSE 8000
+EXPOSE 8001
 
 # Specify the command to run on container start
-CMD [ "python", "main.py" ]
+CMD [ "python3", "main.py" ]
