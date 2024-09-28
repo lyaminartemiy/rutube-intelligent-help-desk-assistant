@@ -19,6 +19,21 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+
+  angular-app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
   hackaton-backend:
     build: ./backend
     container_name: hackaton-backend
