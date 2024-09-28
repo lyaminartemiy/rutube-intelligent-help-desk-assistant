@@ -1,0 +1,90 @@
+.message {
+  width: 100%;
+  display: flex;
+  padding-top: 15px;
+  &__my {
+    align-items: center;
+    justify-content: flex-end;
+    .text {
+      position: relative;
+      display: flex;
+      max-width: 60%;
+      min-width: 30%;
+      width: max-content;
+      background-color: #00A1E7;
+      padding: 25px 45px 10px 10px;
+      color: white;
+      border-radius: 20px;
+      small:first-of-type {
+        color: white !important;
+        position: absolute;
+        left: 10px;
+        top: 5px;
+      }
+      small:last-of-type {
+        color: white !important;
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+      }
+    }
+  }
+  &__bot {
+    align-items: center;
+    justify-content: flex-end;
+    .text {
+      position: relative;
+      display: flex;
+      max-width: 60%;
+      width: max-content;
+      background-color: #c6a903;
+      padding: 25px 45px 10px 10px;
+      color: white;
+      min-width: 30%;
+      border-radius: 20px;
+      p {
+        color: white !important;
+      }
+      small:first-of-type {
+        color: white !important;
+        position: absolute;
+        left: 10px;
+        top: 5px;
+      }
+      small:last-of-type {
+        color: white !important;
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+      }
+    }
+  }
+  &__user {
+    align-items: center;
+    justify-content: flex-start;
+    .text {
+      width: max-content;
+      position: relative;
+      color: white;
+      min-width: 30%;
+      max-width: 60%;
+      display: flex;
+      padding: 25px 45px 10px 10px;
+
+      border-radius: 20px;
+      background-color: #29333d;
+
+      small:first-of-type {
+        color: white !important;
+        position: absolute;
+        left: 10px;
+        top: 5px;
+      }
+      small:last-of-type {
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+      }
+    }
+  }
+}

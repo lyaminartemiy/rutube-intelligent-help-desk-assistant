@@ -1,0 +1,22 @@
+<div style="
+            height: 100vh; display: flex; 
+            background-color: #14191F; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 0 35%;
+            gap: 30px">
+    <img src="assets/logo.svg" width="55%">
+
+    <ng-container [formGroup]="loginForm" style="width: 400px">
+        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%">
+            <small>Логин сотрудника</small>
+            <input class="my-input" placeholder="Логин" formControlName="username" type="email">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;width: 100%">
+            <small>Пароль</small>
+            <input class="my-input" placeholder="Пароль" formControlName="password" type="password">
+        </div>
+        <button class="btn" [disabled]="loginForm.invalid" style="width: 100%; margin-top: 20px" (click)="login()">Войти</button>
+    </ng-container>
+</div>

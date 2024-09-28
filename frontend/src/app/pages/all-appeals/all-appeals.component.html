@@ -1,0 +1,8 @@
+<h1 style="font-size: 18px !important;">Все обращения</h1>
+
+<div style="display: flex; flex-wrap: wrap; width: 100%; gap: 35px; margin-top: 30px" *ngIf="all | async as alls">
+    <ng-container *ngFor="let item of alls">
+        <app-appeal [item]="item" [all]="true"></app-appeal>
+    </ng-container>
+    <p *ngIf="alls.length===0">Активных обращений нет</p>
+</div>

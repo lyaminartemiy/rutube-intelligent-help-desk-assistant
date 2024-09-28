@@ -1,0 +1,21 @@
+<h1 style="font-size: 20px !important;">История обращений</h1>
+
+<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 60px">
+    <small>Поиск по обращениям</small>
+    <input class="my-input" placeholder="Иванов Иван Иванович" [formControl]="name">
+</div>
+
+<div class="tbl-6" style="margin-top: 40px !important;" *ngIf="all | async as alls">
+    <p style="font-size: 16px !important;"><b>№</b></p>
+    <p><b>Тема</b></p>
+    <p><b>Статус</b></p>
+    <p><b>Кол-во участников</b></p>
+    <p><b></b></p>
+    <ng-container *ngFor="let emp of alls">
+        <p>{{ emp.id }}</p>
+        <p>{{ emp.title }}</p>
+        <p>{{ emp.isInProgress ? 'В работе' : 'Закрыто' }}</p>
+        <p>{{ emp.assignees.length }}</p>
+        <p><button class="btn" (click)="goToId(emp.id, 0)">Посмотреть</button></p>
+    </ng-container>
+</div>

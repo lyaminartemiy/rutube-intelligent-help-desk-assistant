@@ -1,0 +1,7 @@
+<div *ngIf="message" class="message" [ngClass]="message.side===Side.USER ? 'message__user' : (message.side===Side.TECH_SUPPORT_EMPLOYEE ? 'message__my' : 'message__bot')">
+    <div class="text">
+        <small><b>{{ message.side===Side.USER ? 'Пользователь' : (message.side===Side.TECH_SUPPORT_EMPLOYEE ? 'Тех.поддрежка' : 'Бот') }}</b></small>
+        <p>{{ message.messageText }}</p>
+        <small>{{ message.createdAt | date:'hh:mm' }}</small>
+    </div>
+</div>

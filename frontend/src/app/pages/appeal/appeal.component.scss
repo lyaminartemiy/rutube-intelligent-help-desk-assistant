@@ -1,0 +1,47 @@
+.card {
+  width: 380px;
+  height: 150px;
+  background-color: #29333d;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 15px;
+  border-radius: 10px;
+  transition: .5s ease;
+  p {
+    font-size: 16px !important;
+  }
+}
+.card__green {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px, rgba(0, 255, 30, 0.5) 0px 2px 20px;
+  &:hover {
+    background-color: rgba(0, 255, 30, 0.5);
+    p, small {
+      color: white !important;
+    }
+  }
+}
+.card__red {
+  box-shadow: rgba(255, 0, 0, 0.1) 0px 4px 12px, rgba(255, 0, 0, 0.7) 0px 4px 20px;
+  &:hover {
+    background-color: rgba(255, 0, 0, 0.7);
+
+    p, small {
+      color: white !important;
+    }
+  }
+  
+}
+.buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  button {
+    width: 45%;
+    background-color: rgb(61, 74, 88, 1);
+    border: transparent;
+    &:hover {
+      background-color: rgb(61, 74, 88, 0.8);
+    }
+  }
+}
