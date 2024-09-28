@@ -12,6 +12,7 @@ class UpdateMessageDTO(BaseModel):
     chat_id: str
     message_id: str
     text: Optional[str]
+    ai_text: Optional[str]
     created_at: Optional[str]
     is_helpful: Optional[bool]
 

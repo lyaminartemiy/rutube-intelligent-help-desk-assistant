@@ -13,6 +13,6 @@ public interface SendMessageClient {
     @PostMapping("/send-message/bot")
     SendMessageResponse sendMessageFromBot(@RequestBody SendBotMessageDto requestBody);
 
-    @PostMapping("/send-message/dp")
+    @PostMapping("/api/send-message/dp")
     SendMessageResponse sendMessageFromTechSupport(@RequestBody SendTechSupportMessageDto requestBody);
 }

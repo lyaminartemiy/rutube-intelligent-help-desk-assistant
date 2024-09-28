@@ -1,4 +1,3 @@
-import asyncio
 from typing import Union, Dict, Any
 
 import aiohttp
@@ -21,12 +20,13 @@ def _create_new_session_model(message: types.Message) -> schemas.CreateSessionDT
     return schemas.CreateSessionDTO(chat_id=str(message.from_user.id))
 
 
-def _create_user_message_model(message: types.Message) -> schemas.UpdateMessageDTO:
+def _create_user_message_model(message: types.Message, ai_text: str) -> schemas.UpdateMessageDTO:
     """Create a user message model."""
     return schemas.UpdateMessageDTO(
         chat_id=str(message.chat.id),
         message_id=str(message.message_id),
         text=message.text,
+        ai_text=ai_text,
         created_at=str(message.date.astimezone().isoformat()),
         is_helpful=None,
     )
@@ -39,6 +39,7 @@ def _create_bot_message_model(message: types.Message) -> schemas.UpdateMessageDT
         chat_id=str(message.chat.id),
         message_id=str(message.message_id),
         text=None,
+        ai_text=None,
         created_at=None,
         is_helpful=None,
     )
@@ -55,6 +56,7 @@ def _create_feedback_message(
         chat_id=str(chat_id),
         message_id=str(message_id),
         text=None,
+        ai_text=None,
         created_at=None,
         is_helpful=is_positive,
     )
@@ -81,13 +83,11 @@ async def _log_event_with_json(
     message_data = clean_params(**data.model_dump())
     print("message_data:", message_data)
     async with aiohttp.ClientSession() as session:
-        print("МЫ В СЕССИИ!")
         async with session.post(
             url=endpoint,
             json=message_data,
             headers={"Content-Type": "application/json"},
         ) as response:
-            print(response.status)
             pass
 
 
@@ -131,9 +131,9 @@ class EventsLogger:
             logger.exception(exc)
 
     @staticmethod
-    async def log_user_message(message: types.Message) -> None:
+    async def log_user_message(message: types.Message, ai_text: str) -> None:
         """Log a new user message to the event store."""
-        message_data = _create_user_message_model(message)
+        message_data = _create_user_message_model(message, ai_text)
         logger.info(f"Logging new message from user: {message.from_user.id}")
         try:
             await _log_event_with_json(
