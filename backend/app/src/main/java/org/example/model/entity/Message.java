@@ -38,6 +38,7 @@ public class Message {
 
     String messageId;
 
+    @Column(columnDefinition = "TEXT")
     String messageText;
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
