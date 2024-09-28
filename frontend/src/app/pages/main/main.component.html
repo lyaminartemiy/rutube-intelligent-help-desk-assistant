@@ -1,0 +1,78 @@
+<div style="display: flex; justify-content: center; gap: 30px; width: 100%; padding-top: 50px">
+    <section class="vertical">
+        <div class="contact-info">
+            <h1>Основная информация</h1>
+            <div class="info">
+                <div style="    border-radius: 50%;
+                    margin-right: 20px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 128px;
+                    background-color: #889BAF;
+                    width: 128px;">
+                    <img src="assets/user.svg" width="60px">
+                </div>
+                <div class="column" *ngIf="profile | async as prof">
+                    <div>
+                        <small>Имя</small>
+                        <p>{{ prof.fullName }}</p>
+                    </div>
+                    <div>
+                        <small>Email</small>
+                        <p>{{ prof.email }}</p>
+                    </div>
+                    <div>
+                        <small>Роль</small>
+                        <p>{{ prof.roleName === Role.ADMIN ? 'Aдминистратор' : 'Сотрудник тех.поддержки' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contact-info" *ngIf="employeeStats | async as empl">
+            <h1>Статистика обращений</h1>
+            <div class="info">
+                <div class="column">
+                    <div>
+                        <small>Обработано всего</small>
+                        <p>{{ empl.totalRequestsHandled }}</p>
+                    </div>
+                    <div>
+                        <small>В работе</small>
+                        <p>{{ empl.inProgressRequestsCount }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contact-info" *ngIf="employeeStats | async as empl">
+            <h1>Обращений закрыто</h1>
+            <div class="info">
+                <div class="column">
+                    <div>
+                        <small>Сегодня</small>
+                        <p>{{ empl.closedRequestsCountToday }}</p>
+                    </div>
+                    <div>
+                        <small>На этой неделе</small>
+                        <p>{{ empl.closedRequestsCountThisWeek }}</p>
+                    </div>
+                    <div>
+                        <small>В этом месяце</small>
+                        <p>{{ empl.closedRequestsCountThisMonth }}</p>
+                    </div>
+<!--                    <div>-->
+<!--                        <small>За все время</small>-->
+<!--                        <p>500</p>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+        <div class="contact-info" *ngIf="employeeStats | async as empl">
+        <div style="display: flex; align-items: center; gap: 10px;"(click)="rutubeService.logout()">
+            <img src="assets/logout.svg">
+            <a>Выйти</a>
+        </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="title">
+        <h1>Обращение №123456</h1>
+        <mat-icon style="color: white !important;cursor: pointer" routerLink="/all">close</mat-icon>
+    </div>
+    <div class="messages" *ngIf="messages">
+        <app-one-message *ngFor="let item of messages.slice(0,-1)" [message]="item"></app-one-message>
+        <app-one-message [message]="message" *ngIf="!isEditable()"></app-one-message>
+        <div *ngIf="isEditable()" class="for_input">
+            <input class="my-input" autofocus  placeholder="Сообщение" [formControl]="input">
+        </div>
+    </div>
+    
+    <div class="input" *ngIf="canIEdit()!==0" [ngClass]="{'center' : canIEdit()===3}">
+        <button *ngIf="canIEdit()===1" class="btn" style="background-color: green !important; border-color: green !important;" (click)="aproove()">Одобрить</button>
+        <button *ngIf="canIEdit()===1 && !isEditable()" class="btn" (click)="isEditable.set(true)">Редактировать</button>
+        <button class="btn" (click)="isEditable.set(false)" *ngIf="canIEdit()===1 && isEditable()">Отменить редактировать</button>
+        <button class="btn" (click)="assign(id())" *ngIf="canIEdit()===3">Присоединиться</button>
+
+        <!--        <textarea class="my-input" placeholder="Сообщение"  (keyup)="onSubmit($event)" [formControl]="input"></textarea>-->
+<!--        <button class="btn" (click)="submit()"><mat-icon style="color: white !important;">arrow_upward</mat-icon></button>-->
+    </div>
+</div>

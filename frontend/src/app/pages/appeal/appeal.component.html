@@ -1,0 +1,19 @@
+<div class="card card__green" *ngIf="item" [ngClass]="item.isInProgress ? 'card__red' : 'card__green' ">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+        <p>Тема: {{item.title}}</p>
+        <small>№ {{ item.id }}</small>
+        <small *ngIf="item.isInProgress"><b>Взяли в работу:</b> {{item.assignees}}</small>
+    </div>
+    <div class="buttons" *ngIf="item.isInProgress && all">
+        <button class="btn" (click)="assign(item.id)">Присоединиться</button>
+        <button class="btn" (click)="goToId(item.id, 3)">Диалог</button>
+    </div>
+    <div class="buttons" *ngIf="!item.isInProgress && all">
+        <button class="btn" (click)="assign(item.id)">Помочь</button>
+        <button class="btn" (click)="goToId(item.id, 3)">Диалог</button>
+    </div>
+    <div class="buttons" *ngIf="!all">
+        <button class="btn" (click)="goToId(item.id, 3)">Перейти к диалогу</button>
+        <button class="btn" (click)="closes(item.id)">Закрыть обращение</button>
+    </div>
+</div>

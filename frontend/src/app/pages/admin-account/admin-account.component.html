@@ -1,0 +1,151 @@
+<div style="display: flex; justify-content: center; gap: 30px; width: 100%; padding-top: 50px">
+    <div class="horizontal">
+        <h1 style="margin-left: 20px !important;">Мой профиль</h1>
+        <div class="menu">
+            <div class="menu-item" [ngClass]="{'active': opened()== Menu.My}" (click)="opened.set(Menu.My)">
+                <p>Мои данные</p>
+            </div>
+            <div class="menu-item" [ngClass]="{'active': opened()== Menu.Employee}" (click)="opened.set(Menu.Employee)">
+                <p>Мои сотрудники</p>
+            </div>
+            <div class="menu-item" [ngClass]="{'active': opened()== Menu.Messages}" (click)="opened.set(Menu.Messages)">
+                <p>Обращения</p>
+            </div>
+            <div class="menu-item" [ngClass]="{'active': opened()== Menu.Add}" (click)="opened.set(Menu.Add)">
+                <p>Добавить сотрудника</p>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    <section class="vertical" *ngIf="opened()==Menu.My">
+        <div class="contact-info" *ngIf="profile | async as prof">
+            <h1>Основная информация</h1>
+            <div class="info">
+                <div style="    border-radius: 50%;
+                    margin-right: 20px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 128px;
+                    background-color: #889BAF;
+                    width: 128px;">
+                    <img src="assets/user.svg" width="60px">
+                </div>
+                <div class="column">
+                    <div>
+                        <small>Имя</small>
+                        <p>{{ prof.fullName }}</p>
+                    </div>
+                    <div>
+                        <small>Email</small>
+                        <p>{{ prof.email }}</p>
+                    </div>
+                    <div>
+                        <small>Роль</small>
+                        <p>{{ prof.roleName === Role.ADMIN ? 'Aдминистратор' : 'Сотрудник тех.поддержки' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contact-info" *ngIf="adminEmployees | async as empl">
+            <h1>Сотрудники</h1>
+            <div class="info">
+                <div class="column">
+                    <div>
+                        <small>Количество сотрудников</small>
+                        <p>{{ empl.EmployeeCount }}</p>
+                    </div>
+                    <div>
+                        <small>Количество сотрудников онлайн</small>
+                        <p>{{ empl.onlineEmployeeCount }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contact-info" *ngIf="adminStats | async as adm">
+            <h1>Обращения</h1>
+            <div class="info">
+                <div class="column">
+                    <div>
+                        <small>Обработано ИИ</small>
+                        <p>{{adm.aiHandledPercentage}}%</p>
+                    </div>
+                    <div>
+                        <small>Обработано сотрудниками</small>
+                        <p>{{adm.employeeHandledPercentage}}%</p>
+                    </div>
+                    <div>
+                        <small>В работе</small>
+                        <p>{{adm.inProgressRequestsCount}}</p>
+                    </div>
+                    <div>
+                        <small>Еще не обработано</small>
+                        <p>{{ adm.unassignedRequestsCount }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="vertical" *ngIf="opened()==Menu.Employee">
+        <div class="contact-info">
+            <h1>Все сотрудники</h1>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px">
+                <input class="my-input" placeholder="Иванов Иван Иванович" [formControl]="employeeName">
+            </div>
+            <div class="tbl" *ngIf="myEmployee | async as empl">
+                <p><b>Таб.номер</b></p>
+                <p><b>ФИО</b></p>
+                <p><b>В работе</b></p>
+                <p><b>Обработано</b></p>
+                <p><b>Онлайн</b></p>
+                <ng-container *ngFor="let emp of empl">
+                    <p><b>{{ emp.id }}</b></p>
+                    <p><b>{{ emp.fullName }}</b></p>
+                    <p><b>{{ emp.inProgressRequestCount }}</b></p>
+                    <p><b>{{ emp.ClosedRequestCount }}</b></p>
+                    <p><b>{{ emp.isOnline ? 'Да' : 'Нет' }}</b></p>
+                </ng-container>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="vertical" *ngIf="opened()==Menu.Messages">
+        <div class="contact-info">
+            <h1>Процент обращений, обработанных ИИ каждый день</h1>
+            <div class="info">
+                <img src="assets/12.PNG" style="width: 500px">
+            </div>
+        </div>
+        <div class="contact-info">
+            <h1>Процент обращений, обработанных ИИ за все время</h1>
+            <div class="info">
+                <img src="assets/12.PNG" style="width: 500px">
+            </div>
+        </div>
+    </section>
+
+    <section class="vertical" *ngIf="opened()==Menu.Add">
+        <div class="contact-info">
+            <h1>Добавление нового сотрудника</h1>
+            
+            <ng-container [formGroup]="addForm">
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                    <small>ФИО сотрудника</small>
+                    <input class="my-input" placeholder="Иванов Иван Иванович" formControlName="name">
+                </div>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+                <small>Почта сотрудника</small>
+                <input class="my-input" placeholder="example@example.com" formControlName="email" type="email">
+            </div>
+                <button class="btn" [disabled]="addForm.invalid" (click)="addEmployee()">Добавить сотрудника</button>
+            </ng-container>
+      
+        </div>
+    </section>
+</div>
