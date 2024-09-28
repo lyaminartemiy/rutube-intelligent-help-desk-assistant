@@ -68,10 +68,11 @@ public class SendMessageService {
 
     }
 
-    public SendMessageResponse sendMessageFromTechSupport(Session session, String text, String author) {
+    public SendMessageResponse sendMessageFromTechSupport(Session session, String text, String author, String userReplyMessageId) {
         return sendMessageClient.sendMessageFromTechSupport(new SendTechSupportMessageDto(
                 session.getChatId(),
-                text
+                text,
+                userReplyMessageId
         ));
     }
 }
