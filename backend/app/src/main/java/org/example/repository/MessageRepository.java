@@ -12,4 +12,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     Optional<Message> findOneByMessageId(String messageId);
 
     List<Message> findAllBySession_Id(Long sessionId);
+
+    long countBySide(Message.Side side);
 }

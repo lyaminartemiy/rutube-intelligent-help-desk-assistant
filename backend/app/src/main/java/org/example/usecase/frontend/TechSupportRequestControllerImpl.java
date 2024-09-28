@@ -2,6 +2,7 @@ package org.example.usecase.frontend;
 
 import lombok.RequiredArgsConstructor;
 import org.example.model.dto.MessageDto;
+import org.example.model.dto.SendMessageToDialogueDto;
 import org.example.model.entity.Employee;
 import org.example.service.MessageService;
 import org.example.service.TechSupportRequestService;
@@ -12,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,8 +43,8 @@ public class TechSupportRequestControllerImpl implements TechSupportRequestContr
 
     @Override
     @PostMapping("/{requestId}/send")
-    public MessageDto sendMessageToDialogue(@PathVariable Long requestId, String text, @AuthenticationPrincipal Employee employee) {
-        return service.sendMessageToDialogue(requestId, text, employee.getFullName());
+    public MessageDto sendMessageToDialogue(@PathVariable Long requestId, @RequestBody SendMessageToDialogueDto smDto, @AuthenticationPrincipal Employee employee) {
+        return service.sendMessageToDialogue(requestId, smDto.text(), employee.getFullName(), smDto.isEditedByTechSupport());
     }
 
     @Override

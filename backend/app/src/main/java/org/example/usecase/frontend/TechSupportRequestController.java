@@ -8,8 +8,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.model.dto.MessageDto;
+import org.example.model.dto.SendMessageToDialogueDto;
 import org.example.model.entity.Employee;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -53,6 +58,9 @@ public interface TechSupportRequestController {
             @Parameter(description = "Текст сообщения", required = true) String text,
             Employee employee
     );
+
+    @PostMapping("/{requestId}/send")
+    MessageDto sendMessageToDialogue(@PathVariable Long requestId, @RequestBody SendMessageToDialogueDto smDto, @AuthenticationPrincipal Employee employee);
 
     @Operation(summary = "Назначить сотрудника на обращение",
             description = "Назначить сотрудника на обращение")

@@ -2,17 +2,22 @@ package org.example.service;
 
 import org.example.model.dto.AIProcessedRequestPercentageChart;
 import org.example.model.dto.DailyPercentageOfRequestsHandledByAIChartData;
+import org.example.model.entity.Message;
 import org.example.model.entity.Session;
 import org.example.model.entity.TechSupportRequest;
 import org.example.repository.EmployeeRepository;
+import org.example.repository.MessageRepository;
 import org.example.repository.SessionRepository;
 import org.example.repository.TechSupportRequestRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,11 +25,13 @@ public class AdminStatsService {
     private final EmployeeRepository employeeRepository;
     private final SessionRepository sessionRepository;
     private final TechSupportRequestRepository techSupportRequestRepository;
+    private final MessageRepository messageRepository;
 
-    public AdminStatsService(EmployeeRepository employeeRepository, SessionRepository sessionRepository, TechSupportRequestRepository techSupportRequestRepository) {
+    public AdminStatsService(EmployeeRepository employeeRepository, SessionRepository sessionRepository, TechSupportRequestRepository techSupportRequestRepository, MessageRepository messageRepository) {
         this.employeeRepository = employeeRepository;
         this.sessionRepository = sessionRepository;
         this.techSupportRequestRepository = techSupportRequestRepository;
+        this.messageRepository = messageRepository;
     }
 
     public Long getEmployeeCount() {
@@ -36,8 +43,8 @@ public class AdminStatsService {
     }
 
     public Double getPercentageOfRequestsHandledByAI() {
-        Long handledByAi = sessionRepository.countByStatusAndRequestNull(Session.Status.CLOSED);
-        Long all = sessionRepository.countByStatus(Session.Status.CLOSED);
+        Long handledByAi = messageRepository.countBySide(Message.Side.BOT);
+        Long all = messageRepository.countBySide(Message.Side.BOT) + messageRepository.countBySide(Message.Side.TECH_SUPPORT_EMPLOYEE);
         if (all == 0) {
             return 0.0;
         }
