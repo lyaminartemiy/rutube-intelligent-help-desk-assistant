@@ -1,5 +1,7 @@
 package org.example.repository;
 
+import org.example.model.entity.Message;
+import org.example.model.entity.Session;
 import org.example.model.entity.TechSupportRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +22,11 @@ public interface TechSupportRequestRepository extends JpaRepository<TechSupportR
             select t from TechSupportRequest t inner join t.assignedEmployees assignedEmployees
             where assignedEmployees.username = ?1""")
     List<TechSupportRequest> findByAssignedEmployees_Username(String username);
+
+    List<TechSupportRequest> findBySession_Status(Session.Status status);
+
+    List<TechSupportRequest> findByStatus(TechSupportRequest.Status status);
+
+    @Query("select t from TechSupportRequest t inner join t.session.messages messages where messages.side = ?1")
+    List<TechSupportRequest> findBySession_Messages_Side(Message.Side side);
 }

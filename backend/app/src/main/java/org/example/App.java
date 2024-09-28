@@ -3,8 +3,6 @@
  */
 package org.example;
 
-import org.example.model.entity.Employee;
-import org.example.service.AuthService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -16,16 +14,16 @@ public class App {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(App.class, args);
-        ctx.getBean(AuthService.class).sendSignUpDataToEmail(
-                "Петров Виктор Администраторович",
-                Employee.Role.ADMIN,
-                "olenkaevstratova@gmail.com"
-        );
-        ctx.getBean(AuthService.class).sendSignUpDataToEmail(
-                "Петров Виктор ПОЛЬЗАКТП",
-                Employee.Role.TECH_SUPPORT_EMPLOYEE,
-                "olenkaevstratova@gmail.com"
-        );
+//        ctx.getBean(AuthService.class).sendSignUpDataToEmail(
+//                "Петров Виктор Администраторович",
+//                Employee.Role.ADMIN,
+//                "olenkaevstratova@gmail.com"
+//        );
+//        ctx.getBean(AuthService.class).sendSignUpDataToEmail(
+//                "Петров Виктор ПОЛЬЗАКТП",
+//                Employee.Role.TECH_SUPPORT_EMPLOYEE,
+//                "olenkaevstratova@gmail.com"
+//        );
 //        ctx.getBean(AuthService.class).sendSignUpDataToEmail(
 //                "Петров Виктор Администраторович",
 //                Employee.Role.TECH_SUPPORT_EMPLOYEE,

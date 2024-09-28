@@ -1,9 +1,8 @@
 package org.example.repository;
 
-import org.example.model.entity.Employee;
+import org.example.model.entity.Message;
 import org.example.model.entity.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -23,4 +22,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> findAllByStatusAndRequestNull(Session.Status status);
 
     List<Session> findAllByStatus(Session.Status status);
+
+    @Query("select s from Session s inner join s.messages messages where messages.side = ?1")
+    List<Session> findByMessages_Side(Message.Side side);
 }

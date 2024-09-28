@@ -11,10 +11,8 @@ import org.example.model.dto.MessageDto;
 import org.example.model.dto.SendMessageToDialogueDto;
 import org.example.model.entity.Employee;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -45,6 +43,20 @@ public interface TechSupportRequestController {
             @Parameter(description = "ID обращения", required = true) Long requestId
     );
 
+//    @Operation(summary = "Отправить сообщение в бэкэнд",
+//            description = "Отправляет сообщение в диалог по указанному обращению")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Сообщение успешно отправлено"),
+//            @ApiResponse(responseCode = "404", description = "Обращение не найдено"),
+//            @ApiResponse(responseCode = "400", description = "Некорректный текст сообщения"),
+//            @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+//    })
+//    MessageDto sendMessageToDialogue(
+//            @Parameter(description = "ID обращения", required = true) Long requestId,
+//            @Parameter(description = "Текст сообщения", required = true) String text,
+//            Employee employee
+//    );
+
     @Operation(summary = "Отправить сообщение в бэкэнд",
             description = "Отправляет сообщение в диалог по указанному обращению")
     @ApiResponses(value = {
@@ -53,14 +65,8 @@ public interface TechSupportRequestController {
             @ApiResponse(responseCode = "400", description = "Некорректный текст сообщения"),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера")
     })
-    MessageDto sendMessageToDialogue(
-            @Parameter(description = "ID обращения", required = true) Long requestId,
-            @Parameter(description = "Текст сообщения", required = true) String text,
-            Employee employee
-    );
-
     @PostMapping("/{requestId}/send")
-    MessageDto sendMessageToDialogue(@PathVariable Long requestId, @RequestBody SendMessageToDialogueDto smDto, @AuthenticationPrincipal Employee employee);
+    MessageDto sendMessageToDialogue(@PathVariable @Parameter(description = "ID обращения", required = true) Long requestId, SendMessageToDialogueDto smDto, Employee employee);
 
     @Operation(summary = "Назначить сотрудника на обращение",
             description = "Назначить сотрудника на обращение")

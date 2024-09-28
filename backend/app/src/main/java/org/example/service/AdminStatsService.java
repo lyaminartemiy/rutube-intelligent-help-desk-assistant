@@ -53,17 +53,17 @@ public class AdminStatsService {
     }
 
     public Double getPercentageOfRequestsHandledByEmployees() {
-        Long handledByAi = sessionRepository.countByStatusAndRequestNotNull(Session.Status.CLOSED);
-        Long all = sessionRepository.countByStatus(Session.Status.CLOSED);
+        Long handledByEmployee = messageRepository.countBySide(Message.Side.TECH_SUPPORT_EMPLOYEE);
+        Long all = messageRepository.countBySide(Message.Side.BOT) + messageRepository.countBySide(Message.Side.TECH_SUPPORT_EMPLOYEE);
         if (all == 0) {
             return 0.0;
         }
 
-        return (handledByAi.doubleValue() / all.doubleValue()) * 100;
+        return (handledByEmployee.doubleValue() / all.doubleValue()) * 100;
     }
 
     public Long getInProgressRequestsCount() {
-        return sessionRepository.countByStatus(Session.Status.OPEN);
+        return techSupportRequestRepository.countByStatus(TechSupportRequest.Status.IN_PROGRESS);
     }
 
     public Long getUnassignedRequestsCount() {
@@ -100,18 +100,20 @@ public class AdminStatsService {
     }
 
     public List<AIProcessedRequestPercentageChart> getAIProcessedRequestPercentageChart() {
-        List<Session> handledByAi = sessionRepository.findAllByStatusAndRequestNull(Session.Status.CLOSED);
-        List<Session> all = sessionRepository.findAllByStatus(Session.Status.CLOSED);
+        List<TechSupportRequest> handledByAi = techSupportRequestRepository.findBySession_Messages_Side(Message.Side.BOT);
+        List<TechSupportRequest> all = techSupportRequestRepository.findBySession_Messages_Side(Message.Side.BOT);
+        all.addAll(techSupportRequestRepository.findBySession_Messages_Side(Message.Side.TECH_SUPPORT_EMPLOYEE));
 
         ZonedDateTime startDate = handledByAi.stream()
+                .map(TechSupportRequest::getSession)
                 .map(Session::getCreatedAt)
                 .min(ZonedDateTime::compareTo)
                 .orElse(ZonedDateTime.now());
 
-        Map<ZonedDateTime, Long> handledByAiCount = handledByAi.stream()
+        Map<ZonedDateTime, Long> handledByAiCount = handledByAi.stream().map(TechSupportRequest::getSession)
                 .collect(Collectors.groupingBy(session -> session.getCreatedAt().truncatedTo(ChronoUnit.DAYS), Collectors.counting()));
 
-        Map<ZonedDateTime, Long> allCount = all.stream()
+        Map<ZonedDateTime, Long> allCount = all.stream().map(TechSupportRequest::getSession)
                 .collect(Collectors.groupingBy(session -> session.getCreatedAt().truncatedTo(ChronoUnit.DAYS), Collectors.counting()));
 
         List<AIProcessedRequestPercentageChart> chartData = new ArrayList<>();
@@ -133,6 +135,4 @@ public class AdminStatsService {
         }
         return chartData;
     }
-
-
 }
