@@ -49,7 +49,7 @@ def query_system(
 
     gemma_generate_chain = RunnableLambda(
         lambda x: gemma_inference(
-            x, tokenizer=tokenizer, model=model, prompt_template=answer_prompt_template
+            x, tokenizer=tokenizer, model=model
         )
     )
 
@@ -67,32 +67,46 @@ def query_system(
     return result
 
 
-def gemma_inference(info, tokenizer, model, prompt_template: ChatPromptTemplate):
+# def gemma_inference(info, tokenizer, model, prompt_template: ChatPromptTemplate):
+#     question = info["question"]
+#     docs_context = info["docs_context"]
+
+#     prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
+
+#     input_ids = tokenizer.apply_chat_template(
+#         [{"role": "user", "content": prompt}],
+#         truncation=True,
+#         add_generation_prompt=True,
+#         return_tensors="pt"
+#     ).to("cuda" if torch.cuda.is_available() else "cpu")
+#     outputs = model.generate(
+#         input_ids=input_ids,
+#         max_new_tokens=512,
+#         do_sample=True,
+#         temperature=0.5,
+#         top_k=50,
+#         top_p=0.95
+#     )
+#     decoded_output = tokenizer.batch_decode(outputs, skip_special_tokens=False)[0]
+#     cleaned_output = decoded_output.replace('<bos>', '').replace('<start_of_turn>', '').replace('<end_of_turn>', '').strip()
+#     answer = cleaned_output.split('model')[-1].strip()
+#     print("ОТВЕТ МОДЕЛИ:", answer)
+#     info["result"] = answer
+#     return answer
+
+
+def gemma_inference(info, tokenizer, model):
     question = info["question"]
     docs_context = info["docs_context"]
 
     prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
-
-    input_ids = tokenizer.apply_chat_template(
-        [{"role": "user", "content": prompt}],
-        truncation=True,
-        add_generation_prompt=True,
-        return_tensors="pt"
-    ).to("cuda" if torch.cuda.is_available() else "cpu")
-    outputs = model.generate(
-        input_ids=input_ids,
-        max_new_tokens=512,
-        do_sample=True,
-        temperature=0.5,
-        top_k=50,
-        top_p=0.95
-    )
-    decoded_output = tokenizer.batch_decode(outputs, skip_special_tokens=False)[0]
-    cleaned_output = decoded_output.replace('<bos>', '').replace('<start_of_turn>', '').replace('<end_of_turn>', '').strip()
-    answer = cleaned_output.split('model')[-1].strip()
-    print("ОТВЕТ МОДЕЛИ:", answer)
-    info["result"] = answer
-    return answer
+    message = {"role": "user", "content": prompt}
+    
+    input_ids = tokenizer.apply_chat_template(message, return_tensors="pt", return_dict=True).to("cuda")
+    outputs = model.generate(**input_ids, max_new_tokens=256)
+    
+    info["result"] = outputs
+    return outputs
 
 
 # def fomalize_question(
