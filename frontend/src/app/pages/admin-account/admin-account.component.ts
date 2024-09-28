@@ -64,7 +64,7 @@ export class AdminAccountComponent implements OnInit{
     this.addForm = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email,Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]],
-      role: [Role.ADMIN]
+      role: [Role.TECH_SUPPORT_EMPLOYEE]
     });
     this.getChartAll();
     this.getChartEvery();
@@ -120,7 +120,7 @@ export class AdminAccountComponent implements OnInit{
           this.addForm = this.fb.group({
             fullName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email,Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]],
-            role: [Role.ADMIN]
+            role: [Role.TECH_SUPPORT_EMPLOYEE]
           })
           
         },
