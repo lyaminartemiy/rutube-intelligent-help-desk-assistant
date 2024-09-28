@@ -68,19 +68,11 @@ public class SendMessageService {
 
     }
 
-    public Message sendMessageFromTechSupport(Session session, String text, String author) {
-        SendMessageResponse sendMessageResponse = sendMessageClient.sendMessageFromTechSupport(new SendTechSupportMessageDto(
+    public SendMessageResponse sendMessageFromTechSupport(Session session, String text, String author, String userReplyMessageId) {
+        return sendMessageClient.sendMessageFromTechSupport(new SendTechSupportMessageDto(
                 session.getChatId(),
                 text,
-                false
+                userReplyMessageId
         ));
-        return Message.builder()
-                .messageId(sendMessageResponse.messageId())
-                .messageText(text)
-                .createdAt(ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC))
-                .side(Message.Side.TECH_SUPPORT_EMPLOYEE)
-                .session(session)
-                .author(author)
-                .build();
     }
 }

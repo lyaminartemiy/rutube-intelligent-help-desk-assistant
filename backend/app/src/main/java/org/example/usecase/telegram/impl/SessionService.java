@@ -36,6 +36,7 @@ public class SessionService {
                         .chatId(chatId)
                         .status(Session.Status.OPEN)
                         .createdAt(ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC))
+                        .requests(new ArrayList<>())
                         .build()
         );
     }
@@ -53,7 +54,7 @@ public class SessionService {
                         .assignedEmployees(new ArrayList<>())
                         .build()
         );
-        currentOpenedSession.setRequest(supportRequest);
+        currentOpenedSession.getRequests().add(supportRequest);
         sessionRepository.save(currentOpenedSession);
     }
 }
