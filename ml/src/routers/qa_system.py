@@ -22,7 +22,9 @@ async def predict_sentiment(
     question_prompt_template: ChatPromptTemplate = Depends(lifespan.get_question_prompt_template),
     answer_prompt_template: ChatPromptTemplate = Depends(lifespan.get_answer_prompt_template),
     doc_retriever: Chroma = Depends(lifespan.get_docs_retriever),
-    llm: ChatOpenAI = Depends(lifespan.get_llm),
+    # llm: ChatOpenAI = Depends(lifespan.get_llm),
+    tokenizer: AutoTokenizer = Depends(lifespan.get_gemma_tokenizer),
+    model: AutoModelForCausalLM = Depends(lifespan.get_gemma_model),
     cross_encoder: CrossEncoder = Depends(lifespan.get_cross_encoder),
     output_parser: StrOutputParser = Depends(lifespan.get_output_parser),
 ) -> dict:
@@ -32,7 +34,9 @@ async def predict_sentiment(
         question_prompt_template=question_prompt_template,
         answer_prompt_template=answer_prompt_template,
         doc_retriever=doc_retriever,
-        llm=llm,
+        # llm=llm,
+        tokenizer=tokenizer,
+        model=model,
         cross_encoder=cross_encoder,
         output_parser=output_parser,
     )
@@ -44,6 +48,11 @@ async def predict_sentiment(
         (item[0], float(item[1])) for item in qa_response.get("reranker_result", "")
     ]
 
+    print("ANSWER:", answer)
+    print("METADATA:", docs_metadata)
+    print("VECTOR DATABASE RESULT:", vector_database_result)
+    print("RERANKER RESULT:", reranker_result)
+
     response = dict(
         answer=answer,
         class_1=docs_metadata.get("class_1", ""),
@@ -52,8 +61,6 @@ async def predict_sentiment(
         vector_database_result=vector_database_result,
         reranker_result=reranker_result,
     )
-
-    print("RESPONSE:", response)
     return response
 
 

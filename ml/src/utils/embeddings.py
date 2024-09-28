@@ -1,15 +1,29 @@
+from typing import List
 import os
 
 import pandas as pd
 
 from langchain.schema import Document
 from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
 from resources.faq import data
+from langchain_core.embeddings import Embeddings
+from sentence_transformers import SentenceTransformer
+
+
+class CustomEmbeddings(Embeddings):
+    def __init__(self, model_name: str):
+        super().__init__()
+        self.model = SentenceTransformer(model_name)
+
+    def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        return self.model.encode(texts, convert_to_tensor=False).tolist()
+
+    def embed_query(self, query: str) -> List[float]:
+        return self.model.encode(query, convert_to_tensor=False).tolist()
 
 
 def generate_embeddings(
-    embeddings_model: OpenAIEmbeddings, source_faq: pd.DataFrame
+    embeddings_model: CustomEmbeddings, source_faq: pd.DataFrame
 ) -> None:
     db = Chroma(persist_directory=os.getenv("CHROMA_DB"))
     db.delete(ids=[str(i) for i in range(1, len(data) + 1)])

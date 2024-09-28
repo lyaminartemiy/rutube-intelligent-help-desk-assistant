@@ -1,8 +1,9 @@
 from typing import Any, Dict
 
-from config.config import QASystemConfig
+from config.config import QASystemConfig, PromptConfig
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
+from langchain.prompts import ChatPromptTemplate
 from langchain_chroma import Chroma
 from langchain_core.runnables import (
     RunnableLambda,
@@ -22,7 +23,9 @@ def query_system(
     question_prompt_template: ChatPromptTemplate,
     answer_prompt_template: ChatPromptTemplate,
     doc_retriever: Chroma,
-    llm: ChatOpenAI,
+    # llm: ChatOpenAI,
+    tokenizer: AutoTokenizer,
+    model: AutoModelForCausalLM,
     cross_encoder: CrossEncoder,
     output_parser: StrOutputParser,
 ) -> Dict[str, Any]:
@@ -45,19 +48,52 @@ def query_system(
         )
     )
 
+    gemma_generate_chain = RunnableLambda(
+        lambda x: gemma_inference(
+            x, tokenizer=tokenizer, model=model, prompt_template=answer_prompt_template
+        )
+    )
+
     prepere_candidates_chain = (
         # fomalize_question_chain
         documents_retrieval_chain
         | rerank_documents_chain
     )
-    model_chain = answer_prompt_template | llm | output_parser
 
     complete_chain = prepere_candidates_chain | RunnablePassthrough.assign(
-        result=model_chain
+        result=gemma_generate_chain
     )
 
     result = complete_chain.invoke(question)
     return result
+
+
+def gemma_inference(info, tokenizer, model, prompt_template: ChatPromptTemplate):
+    question = info["question"]
+    docs_context = info["docs_context"]
+
+    prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
+
+    input_ids = tokenizer.apply_chat_template(
+        [{"role": "user", "content": prompt}],
+        truncation=True,
+        add_generation_prompt=True,
+        return_tensors="pt"
+    ).to("cpu")
+    outputs = model.generate(
+        input_ids=input_ids,
+        max_new_tokens=512,
+        do_sample=True,
+        temperature=0.5,
+        top_k=50,
+        top_p=0.95
+    )
+    decoded_output = tokenizer.batch_decode(outputs, skip_special_tokens=False)[0]
+    cleaned_output = decoded_output.replace('<bos>', '').replace('<start_of_turn>', '').replace('<end_of_turn>', '').strip()
+    answer = cleaned_output.split('model')[-1].strip()
+    print("ОТВЕТ МОДЕЛИ:", answer)
+    info["result"] = answer
+    return answer
 
 
 # def fomalize_question(

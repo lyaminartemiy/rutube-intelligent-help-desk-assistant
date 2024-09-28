@@ -25,7 +25,7 @@ def rerank_documents(
     info, k: int, cross_encoder: CrossEncoder
 ) -> List[Tuple[Any, float]]:
     question = info["question"]
-    print("ОТВЕТ ИЗ ЦЕПОЧКИ:", question)
+
     docs_context = [doc.page_content for doc in info["docs_context"]]
     docs_answers = [doc.metadata["answer"] for doc in info["docs_context"]]
     docs_metadata = [doc.metadata for doc in info["docs_context"]]
