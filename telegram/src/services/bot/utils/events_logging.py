@@ -1,4 +1,3 @@
-import asyncio
 from typing import Union, Dict, Any
 
 import aiohttp
@@ -84,13 +83,11 @@ async def _log_event_with_json(
     message_data = clean_params(**data.model_dump())
     print("message_data:", message_data)
     async with aiohttp.ClientSession() as session:
-        print("МЫ В СЕССИИ!")
         async with session.post(
             url=endpoint,
             json=message_data,
             headers={"Content-Type": "application/json"},
         ) as response:
-            print(response.status)
             pass
 
 
