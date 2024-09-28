@@ -10,6 +10,7 @@ from services.bot.states.utils import (
 from services.bot.utils.events_logging import EventsLogger
 from services.bot.utils.keyboards import Keyboard
 from services.bot.utils.phrases import Phrase
+from services.bot.utils.ai_service import post_question_in_ai_service
 from services.message import (
     send_ai_message_to_user_mock,
     send_dispather_message_to_user_mock,
@@ -32,17 +33,11 @@ async def handle_new_report_problem(message: types.Message, state: FSMContext) -
 
 
 @dp.message_handler(state=ProblemState.waiting_user_request)
-async def handle_problem_answer_from_ai(
+async def handle_problem_answer_from_user(
     message: types.Message, state: FSMContext
 ) -> None:
-    await EventsLogger.log_user_message(message=message)
-    # await send_ai_message_to_user_mock(message=message, state=state)
-
-
-@dp.message_handler(state=ProblemState.waiting_dispatcher_response)
-async def handle_problem_answer_from_dispatcher(message: types.Message) -> None:
-    # await EventsLogger.log_user_message(message=message)
-    await send_dispather_message_to_user_mock(message=message)
+    ai_response = await post_question_in_ai_service(question=message.text)
+    await EventsLogger.log_user_message(message=message, ai_text=ai_response.get("answer"))
 
 
 @dp.callback_query_handler(
@@ -56,7 +51,7 @@ async def handle_positive_feedback(
         message_id=callback_query.message.message_id,
         reply_markup=None,
     )
-    await reset_dislike_count(callback_query=callback_query, state=state)
+    # await reset_dislike_count(callback_query=callback_query, state=state)
 
 
 @dp.callback_query_handler(
@@ -70,4 +65,4 @@ async def handle_negative_feedback(
         message_id=callback_query.message.message_id,
         reply_markup=None,
     )
-    await increment_dislike_count(callback_query=callback_query, state=state)
+    # await increment_dislike_count(callback_query=callback_query, state=state)

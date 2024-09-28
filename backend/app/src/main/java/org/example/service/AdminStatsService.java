@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,29 +71,31 @@ public class AdminStatsService {
         return techSupportRequestRepository.countByStatus(TechSupportRequest.Status.OPEN);
     }
 
-    public List<DailyPercentageOfRequestsHandledByAIChartData> getDailyPercentageOfRequestsHandledByAIChart() {
-        List<Session> handledByAi = sessionRepository.findAllByStatusAndRequestNull(Session.Status.CLOSED);
-        List<Session> all = sessionRepository.findAllByStatus(Session.Status.CLOSED);
+    public List<DailyPercentageOfRequestsHandledByAIChartData> getPlotPercentageOfRequestsHandledByAIChart() {
+        List<Message> handledByAi = messageRepository.findAllBySide(Message.Side.BOT);
+        List<Message> all = messageRepository.findAllBySide(Message.Side.BOT);
+        all.addAll(messageRepository.findAllBySide(Message.Side.TECH_SUPPORT_EMPLOYEE));
+
+        Collector<Message, ?, Map<ZonedDateTime, Long>> grouping = Collectors.groupingBy(message -> message.getCreatedAt().truncatedTo(ChronoUnit.MINUTES), Collectors.counting());
 
         Map<ZonedDateTime, Long> handledByAiCount = handledByAi.stream()
-                .collect(Collectors.groupingBy(session -> session.getCreatedAt().truncatedTo(ChronoUnit.DAYS), Collectors.counting()));
-
+                .collect(grouping);
         Map<ZonedDateTime, Long> allCount = all.stream()
-                .collect(Collectors.groupingBy(session -> session.getCreatedAt().truncatedTo(ChronoUnit.DAYS), Collectors.counting()));
+                .collect(grouping);
 
         List<DailyPercentageOfRequestsHandledByAIChartData> chartData = new ArrayList<>();
 
-        Set<ZonedDateTime> allDays = new HashSet<>(handledByAiCount.keySet());
-        allDays.addAll(allCount.keySet());
+        Set<ZonedDateTime> allDates = new HashSet<>(handledByAiCount.keySet());
+        allDates.addAll(allCount.keySet());
 
-        for (ZonedDateTime day : allDays) {
-            long handledByAiSessions = handledByAiCount.getOrDefault(day, 0L);
-            long totalSessions = allCount.getOrDefault(day, 0L);
+        for (ZonedDateTime date : allDates) {
+            long handledByAiSessions = handledByAiCount.getOrDefault(date, 0L);
+            long totalSessions = allCount.getOrDefault(date, 0L);
             double percentage = totalSessions > 0 ? (double) handledByAiSessions / totalSessions * 100 : 0.0;
 
 
             DailyPercentageOfRequestsHandledByAIChartData data = new DailyPercentageOfRequestsHandledByAIChartData(percentage,
-                    day);
+                    date);
             chartData.add(data);
         }
 
@@ -110,11 +113,12 @@ public class AdminStatsService {
                 .min(ZonedDateTime::compareTo)
                 .orElse(ZonedDateTime.now());
 
-        Map<ZonedDateTime, Long> handledByAiCount = handledByAi.stream().map(TechSupportRequest::getSession)
-                .collect(Collectors.groupingBy(session -> session.getCreatedAt().truncatedTo(ChronoUnit.DAYS), Collectors.counting()));
+        Collector<Session, ?, Map<ZonedDateTime, Long>> grouping = Collectors.groupingBy(session -> session.getCreatedAt().truncatedTo(ChronoUnit.MINUTES), Collectors.counting());
 
+        Map<ZonedDateTime, Long> handledByAiCount = handledByAi.stream().map(TechSupportRequest::getSession)
+                .collect(grouping);
         Map<ZonedDateTime, Long> allCount = all.stream().map(TechSupportRequest::getSession)
-                .collect(Collectors.groupingBy(session -> session.getCreatedAt().truncatedTo(ChronoUnit.DAYS), Collectors.counting()));
+                .collect(grouping);
 
         List<AIProcessedRequestPercentageChart> chartData = new ArrayList<>();
 

@@ -24,7 +24,7 @@ public class UpdateMessageControllerImpl implements UpdateMessageController {
                 requestBody.text(),
                 requestBody.createdAt(),
                 requestBody.isHelpful(),
-                requestBody.side()
+                requestBody.aiText()
         );
     }
 }

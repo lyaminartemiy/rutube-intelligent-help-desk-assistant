@@ -46,17 +46,18 @@ public class TechSupportRequestService {
         if (isEditedByTechSupport) {
             lastMessageFromDialogue.setSide(Message.Side.TECH_SUPPORT_EMPLOYEE);
             lastMessageFromDialogue.setAuthor(request.getAssignedEmployees().getFirst().getFullName());
-            messageRepository.save(lastMessageFromDialogue);
         }
-
-        Message message = sendMessageService.sendMessageFromTechSupport(session, text, authorName);
+        Message userQuestion = session.getMessages().get(session.getMessages().size() - 1);
+        var response = sendMessageService.sendMessageFromTechSupport(session, text, authorName, userQuestion.getMessageId());
+        lastMessageFromDialogue.setMessageId(response.messageId());
         request.setStatus(TechSupportRequest.Status.CLOSED);
+        messageRepository.save(lastMessageFromDialogue);
         techSupportRequestRepository.save(request);
         return new MessageDto(
-                message.getMessageText(),
-                message.getCreatedAt(),
-                message.getSide(),
-                message.getIsHelpful()
+                lastMessageFromDialogue.getMessageText(),
+                lastMessageFromDialogue.getCreatedAt(),
+                lastMessageFromDialogue.getSide(),
+                lastMessageFromDialogue.getIsHelpful()
         );
     }
 

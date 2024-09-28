@@ -8,6 +8,6 @@ import jakarta.annotation.Nullable;
 public record SendTechSupportMessageDto(
         String chatId,
         @Nullable String text,
-        Boolean isDone
+        String messageId
 ) {
 }

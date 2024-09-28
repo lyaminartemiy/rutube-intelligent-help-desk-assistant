@@ -11,6 +11,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query("select m from Message m where m.messageId = ?1")
     Optional<Message> findOneByMessageId(String messageId);
 
+    List<Message> findAllBySide(Message.Side side);
+
     List<Message> findAllBySession_Id(Long sessionId);
 
     long countBySide(Message.Side side);
