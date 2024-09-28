@@ -49,12 +49,12 @@ export class RutubeService {
         return this.http.get<AdminRequestsStats>(`${environment.api}/admin-stats/requests/stats`);
     }
 
-    getAdminChartEvery(): Observable<AIProcessedRequestPercentageChart> {
-        return this.http.get<AIProcessedRequestPercentageChart>(`${environment.api}/admin-stats/chart/daily-percentage-of-requests-handled-by-ai`);
+    getAdminChartEvery(): Observable<AIProcessedRequestPercentageChart[]> {
+        return this.http.get<AIProcessedRequestPercentageChart[]>(`${environment.api}/admin-stats/chart/plot-percentage-of-requests-handled-by-ai`);
     }
 
-    getAdminChartAll(): Observable<AIProcessedRequestPercentageChart> {
-        return this.http.get<AIProcessedRequestPercentageChart>(`${environment.api}/admin-stats/chart/ai-processed-request-percentage`);
+    getAdminChartAll(): Observable<AIProcessedRequestPercentageChart[]> {
+        return this.http.get<AIProcessedRequestPercentageChart[]>(`${environment.api}/admin-stats/chart/ai-processed-request-percentage`);
     }
 
     addEmployee(user: SignUpData): Observable<any> {

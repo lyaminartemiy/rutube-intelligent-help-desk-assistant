@@ -345,7 +345,7 @@ h3:hover {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(5, 1fr);
-  row-gap: 30px;
+  row-gap: 20px;
   column-gap: 10px;
   button {
     height: 35px !important;
@@ -356,4 +356,11 @@ h3:hover {
       border-color: #42A4FF;
     }
   }
+}
+.ngx-charts text { fill: #fff !important; }
+.ngx-charts .gridline-path {
+  stroke: #455066 !important;
+}
+ngx-charts .tooltip-anchor {
+  fill: #455066 !important;
 }
