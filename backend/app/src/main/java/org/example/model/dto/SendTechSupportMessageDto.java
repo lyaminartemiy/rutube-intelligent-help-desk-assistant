@@ -7,7 +7,6 @@ import jakarta.annotation.Nullable;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record SendTechSupportMessageDto(
         String chatId,
-        @Nullable String text,
-        Boolean isDone
+        @Nullable String text
 ) {
 }

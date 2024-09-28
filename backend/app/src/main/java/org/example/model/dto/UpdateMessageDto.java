@@ -14,6 +14,7 @@ public record UpdateMessageDto(
         String text,
         @Nullable ZonedDateTime createdAt,
         @Nullable Boolean isHelpful,
-        Message.Side side
+        Message.Side side,
+        String aiText
 ) {
 }
