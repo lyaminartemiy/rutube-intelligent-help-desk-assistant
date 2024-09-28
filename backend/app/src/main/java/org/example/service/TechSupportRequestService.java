@@ -33,14 +33,17 @@ public class TechSupportRequestService {
     }
 
     public MessageDto sendMessageToDialogue(Long requestId, String text, String authorName, Boolean isEditedByTechSupport) {
-        Session session = techSupportRequestRepository.findById(requestId).get().getSession();
+        TechSupportRequest request = techSupportRequestRepository.findById(requestId).get();
+        Session session = request.getSession();
         Message lastMessageFromDialogue = session.getMessages().getLast();
         assert lastMessageFromDialogue.getSide().equals(Message.Side.BOT);
         lastMessageFromDialogue.setMessageText(text);
         if (isEditedByTechSupport) {
             lastMessageFromDialogue.setSide(Message.Side.TECH_SUPPORT_EMPLOYEE);
         }
+
         Message message = sendMessageService.sendMessageFromTechSupport(session, text, authorName);
+        request.setStatus(TechSupportRequest.Status.CLOSED);
         return new MessageDto(
                 message.getMessageText(),
                 message.getCreatedAt(),
