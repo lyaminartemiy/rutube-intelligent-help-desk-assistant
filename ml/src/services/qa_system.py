@@ -104,7 +104,7 @@ def gemma_inference(info, tokenizer, model):
     encoded_input = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to("cuda")
 
     output = model.generate(
-        input_ids=encoded_input,
+        input_ids=encoded_input["input_ids"],
         do_sample=True,
         max_new_tokens=512,
         temperature=0.5,
