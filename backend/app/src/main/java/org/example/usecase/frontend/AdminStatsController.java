@@ -8,6 +8,7 @@ import org.example.model.dto.AIProcessedRequestPercentageChart;
 import org.example.model.dto.AdminEmployeeStats;
 import org.example.model.dto.AdminRequestsStats;
 import org.example.model.dto.DailyPercentageOfRequestsHandledByAIChartData;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -71,7 +72,8 @@ public interface AdminStatsController extends HideApiFragments {
             @ApiResponse(responseCode = "200", description = "Данные для графика успешно получены"),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера")
     })
-    List<DailyPercentageOfRequestsHandledByAIChartData> getDailyPercentageOfRequestsHandledByAIChart();
+    @GetMapping("/chart/plot-percentage-of-requests-handled-by-ai")
+    List<DailyPercentageOfRequestsHandledByAIChartData> getPlotPercentageOfRequestsHandledByAIChart();
 
     @Operation(summary = "Получить процент обращений обработанных ИИ за всё время (график)", description = "Возвращает данные для графика процента обращений, обработанных ИИ, за всё время")
     @ApiResponses(value = {
