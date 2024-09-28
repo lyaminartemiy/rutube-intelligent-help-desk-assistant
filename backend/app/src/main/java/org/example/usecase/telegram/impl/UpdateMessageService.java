@@ -1,9 +1,9 @@
 package org.example.usecase.telegram.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.model.dto.AiResponse;
 import org.example.model.entity.Message;
 import org.example.model.entity.Session;
-import org.example.model.entity.TechSupportRequest;
 import org.example.repository.MessageRepository;
 import org.example.repository.SessionRepository;
 import org.example.repository.TechSupportRequestRepository;
@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -52,31 +51,32 @@ public class UpdateMessageService {
                     Session currentSession = sessionRepository.findByChatIdAndStatus(chatId, Session.Status.OPEN).getFirst();
                     if (text != null && !text.isEmpty()) {
                         log.info("Мы попали в момент, когда питон присылает сообщение пользователя");
-//                        Message userMessageToAnswer = messageRepository.save(
-//                                Message.builder()
-//                                        .messageId(messageId)
-//                                        .messageText(text)
-//                                        .createdAt(createdAt)
-//                                        .side(Message.Side.USER)
-//                                        .session(currentSession)
-//                                        .author("Пользователь")
-//                                        .build()
-//                        );
-//
-//                        if (currentSession.getRequest() == null) {
-//                            AiResponse aiResponse = aiService.getAnswerFromAi(currentSession, userMessageToAnswer);
-//                            messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
-//                        }
-                        if (messageSide == Message.Side.BOT) {
-                            TechSupportRequest newRequest = TechSupportRequest.builder()
-                                    .title(text)
-                                    .status(TechSupportRequest.Status.OPEN)
-                                    .session(currentSession)
-                                    .assignedEmployees(new ArrayList<>())
-                                    .build();
-                            techSupportRequestRepository.save(newRequest);
+                        Message userMessageToAnswer = messageRepository.save(
+                                Message.builder()
+                                        .messageId(messageId)
+                                        .messageText(text)
+                                        .createdAt(createdAt)
+                                        .side(Message.Side.USER)
+                                        .session(currentSession)
+                                        .author("Пользователь")
+                                        .build()
+                        );
+
+                        if (currentSession.getRequest() == null) {
+                            AiResponse aiResponse = aiService.getAnswerFromAi(currentSession, userMessageToAnswer);
+                            messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
+                            messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
                         }
-//                        messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
+//                        if (messageSide == Message.Side.BOT) {
+//                            TechSupportRequest newRequest = TechSupportRequest.builder()
+//                                    .title(text)
+//                                    .status(TechSupportRequest.Status.OPEN)
+//                                    .session(currentSession)
+//                                    .assignedEmployees(new ArrayList<>())
+//                                    .build();
+//                            techSupportRequestRepository.save(newRequest);
+//                        }
+
                     } else {
                         log.info("Мы попали в момент, когда питон присылает messageId для его установки в ботовское сообщение");
                         Message lastMessageInSession = messageRepository.findAllBySession_Id(currentSession.getId()).getLast();
