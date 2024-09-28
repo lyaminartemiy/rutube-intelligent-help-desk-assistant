@@ -47,8 +47,8 @@ public class TechSupportRequestService {
             lastMessageFromDialogue.setSide(Message.Side.TECH_SUPPORT_EMPLOYEE);
             lastMessageFromDialogue.setAuthor(request.getAssignedEmployees().getFirst().getFullName());
         }
-
-        var response = sendMessageService.sendMessageFromTechSupport(session, text, authorName);
+        Message userQuestion = session.getMessages().get(session.getMessages().size() - 1);
+        var response = sendMessageService.sendMessageFromTechSupport(session, text, authorName, userQuestion.getMessageId());
         lastMessageFromDialogue.setMessageId(response.messageId());
         request.setStatus(TechSupportRequest.Status.CLOSED);
         messageRepository.save(lastMessageFromDialogue);
