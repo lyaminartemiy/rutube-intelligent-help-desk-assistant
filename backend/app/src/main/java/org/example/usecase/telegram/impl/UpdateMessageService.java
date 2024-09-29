@@ -82,12 +82,12 @@ public class UpdateMessageService {
                                 .assignedEmployees(new ArrayList<>())
                                 .build();
                         newRequest = techSupportRequestRepository.save(newRequest);
-                        techSupportRequestService.sendMessageToDialogue( // FIXME Заглушка для жюри, чтоб можно было пользоваться без реального пользователя ТП
-                                newRequest.getId(),
-                                botMessage.getMessageText(),
-                                "Бот",
-                                false
-                                );
+                        //techSupportRequestService.sendMessageToDialogue( // FIXME Заглушка для жюри, чтоб можно было пользоваться без реального пользователя ТП
+                        //        newRequest.getId(),
+                        //        botMessage.getMessageText(),
+                        //        "Бот",
+                        //        false
+                        //        );
                     } else {
                         log.info("Мы попали в момент, когда питон присылает messageId для его установки в ботовское сообщение");
                         Message lastMessageInSession = messageRepository.findAllBySession_Id(currentSession.getId()).getLast();
