@@ -32,7 +32,7 @@ async def lifespan(app: fastapi.FastAPI):
     app.state.model = AutoModelForCausalLM.from_pretrained(
         "ai-forever/ruGPT-3.5-13B",
         device_map="cuda",
-        torch_dtype=torch.bfloat16,
+        torch_dtype=torch.float16,
     )
     logger.info("Gemma model and tokenizer loaded")
 
