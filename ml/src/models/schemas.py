@@ -22,6 +22,7 @@ class Request(BaseModel):
     Attributes:
         question (str): The question asked by the user.
     """
+    question: str
 
 
 class Response(BaseModel):
