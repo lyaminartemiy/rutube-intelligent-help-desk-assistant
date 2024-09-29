@@ -95,7 +95,7 @@ def query_system(
 #     return answer
 
 
-def gemma_inference(info, tokenizer, model):
+def gemma_inference(info, tokenizer: AutoTokenizer, model: AutoModelForCausalLM):
     question = info["question"]
     docs_context = info["docs_context"]
 
@@ -121,7 +121,12 @@ def gemma_inference(info, tokenizer, model):
     print("DECODE_OUTPUT:", decoded_output, end="\n\n")
     
     info["result"] = decoded_output
-    return decoded_output
+
+    decoded_output = decoded_output.split("Ответ:")
+    if len(decoded_output) < 2:
+        return "Я не знаю."
+    else:
+        return decoded_output[1].strip()
 
 
 # def fomalize_question(
