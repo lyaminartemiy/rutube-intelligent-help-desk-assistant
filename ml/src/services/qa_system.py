@@ -108,10 +108,10 @@ def gemma_inference(info, tokenizer, model):
 
     output = model.generate(
         input_ids=encoded_input["input_ids"],
-        do_sample=True,
-        max_new_tokens=512,
-        temperature=0.5,
-        top_k=50,
+        do_sample=False,
+        max_new_tokens=256,
+        temperature=0.3,
+        top_k=30,
         top_p=0.95,
     )
     print("OUTPUT:", output, end="\n\n")
