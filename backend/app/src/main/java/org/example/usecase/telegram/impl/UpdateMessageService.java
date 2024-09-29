@@ -7,6 +7,7 @@ import org.example.model.entity.TechSupportRequest;
 import org.example.repository.MessageRepository;
 import org.example.repository.SessionRepository;
 import org.example.repository.TechSupportRequestRepository;
+import org.example.service.TechSupportRequestService;
 import org.example.usecase.ml.AiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ public class UpdateMessageService {
     private final SendMessageService sendMessageService;
     private final AiService aiService;
     private final TechSupportRequestRepository techSupportRequestRepository;
+    private final TechSupportRequestService techSupportRequestService;
 
     public void createOrUpdateMessageInDatabase(
             String chatId,
@@ -63,11 +65,6 @@ public class UpdateMessageService {
                                         .build()
                         );
                         messageRepository.save(userMessageToAnswer);
-//                        if (currentSession.getRequest() == null) {
-//                            AiResponse aiResponse = aiService.getAnswerFromAi(currentSession, userMessageToAnswer);
-//                            messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
-////                            messageRepository.save(sendMessageService.sendMessageFromBot(currentSession, aiResponse));
-//                        }
                         Message botMessage = messageRepository.save(
                                 Message.builder()
                                         .messageText(aiText)
@@ -84,7 +81,13 @@ public class UpdateMessageService {
                                 .session(currentSession)
                                 .assignedEmployees(new ArrayList<>())
                                 .build();
-                        techSupportRequestRepository.save(newRequest);
+                        newRequest = techSupportRequestRepository.save(newRequest);
+                        techSupportRequestService.sendMessageToDialogue( // FIXME Заглушка для жюри, чтоб можно было пользоваться без реального пользователя ТП
+                                newRequest.getId(),
+                                botMessage.getMessageText(),
+                                "Бот",
+                                false
+                                );
                     } else {
                         log.info("Мы попали в момент, когда питон присылает messageId для его установки в ботовское сообщение");
                         Message lastMessageInSession = messageRepository.findAllBySession_Id(currentSession.getId()).getLast();
