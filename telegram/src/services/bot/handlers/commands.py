@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from services.bot.launcher import dp, bot
 from services.bot.utils.keyboards import Keyboard
 from services.bot.states.problem import ProblemState
-from services.bot.states.utils import EventsLogger
+from services.bot.utils.events_logging import EventsLogger
 from services.bot.utils.phrases import Phrase
 
 
