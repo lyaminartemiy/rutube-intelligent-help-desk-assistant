@@ -112,7 +112,7 @@ def gemma_inference(info, tokenizer, model):
         do_sample=False,
         max_new_tokens=512,
         temperature=0,
-        # top_k=30,
+        top_k=30,
         # top_p=0.95,
     )
     print("OUTPUT:", output, end="\n\n")
