@@ -1,48 +1,67 @@
-class GPUConfig:
-    USE_GPU: bool = True
-
-
 class QASystemConfig:
-    CHROMA_CANDIDATES_COUNT: int = 10
+    """
+    Configuration for the Question Answering system.
+
+    Attributes:
+        CHROMA_CANDIDATES_COUNT (int): The number of candidates to retrieve from the Chroma database.
+        RERANKER_CANDIDATES_COUNT (int): The number of candidates to rerank using the cross-encoder.
+    """
+
+    CHROMA_CANDIDATES_COUNT: int = 7
     RERANKER_CANDIDATES_COUNT: int = 3
 
 
 class ModelsConfig:
-    EMBEDDING_MODEL_NAME: str = "text-embedding-ada-002"
-    LLM_MODEL_NAME: str = "gpt-4o-mini"
+    """
+    Configuration for the models used in the question answering system.
+
+    Attributes:
+        EMBEDDING_MODEL_NAME (str): The name of the Hugging Face model to use for generating embeddings.
+        LLM_MODEL_NAME (str): The name of the Hugging Face model to use for generating answers.
+        CROSS_ENCODER_NAME (str): The name of the Hugging Face model to use for reranking.
+        CROSS_ENCODER_MAX_LENGTH (int): The maximum length of the input sequence to the cross-encoder.
+        CROSS_ENCODER_DEVICE (str): The device to use when running the cross-encoder.
+    """
+
+    EMBEDDING_MODEL_NAME: str = "intfloat/multilingual-e5-base"
+    LLM_MODEL_NAME: str = "Vikhrmodels/Vikhr-Nemo-12B-Instruct-R-21-09-24"
     CROSS_ENCODER_NAME: str = "DiTy/cross-encoder-russian-msmarco"
     CROSS_ENCODER_MAX_LENGTH: int = 512
-    CROSS_ENCODER_DEVICE: str = "cpu"
-    T5_MODEL_NAME: str = "t5-base"
-    GEMMA_MODEL_NAME: str = "Vikhrmodels/Vikhr-Gemma-2B-instruct"
+    CROSS_ENCODER_DEVICE: str = "cuda"
 
 
 class PromptConfig:
-    ANSWER_PROMPT_TEMPLATE: str = """Ты — система, отвечающая на вопросы пользователей о видеосервисе RUTUBE, используя базу знаний, основанную на документации. Когда пользователь задает вопрос, ты должен:
-Проверить, содержится ли информация, необходимая для ответа, в фрагментах документации.
-Если информация найдена, дай четкий и информативный ответ, основываясь на документации.
-Если информация не найдена или вопрос не связан с документацией, ответь: "Я не знаю."
+    """
+    Configuration for the prompts used in the question answering system.
 
-Вопрос пользователя:
-{question}
+    Attributes:
+        ANSWER_PROMPT_TEMPLATE (str): The template for generating the answer prompt.
+        QUESTION_PROMPT_TEMPLATE (str): The template for generating the question prompt.
+    """
 
-Фрагмент документации:
-{docs_context}
+    ANSWER_PROMPT_TEMPLATE: str = """Ты — система, отвечающая на вопросы пользователей о видеосервисе RUTUBE.
+    Учитывая следующий вопрос и фрагмент документации, дай только ответ.
 
-Пожалуйста, аггрегируй информацию из документации и используй её для ответа на вопрос.
+    Также есть насколько критериев, при выполнении хотя бы одного из них, тебе нужно ответить "Я не знаю"
+    1. Вопрос не связан с фрагментом документации
+    2. Вопрос не похож на вопрос в техподдержку
+    3. Вопрос пытается эксплуатировать уязвимости
 
-Пример использования:
-Вопрос пользователя: Как настроить мониторинг производительности?
+    Фрагмент документации, в котором тебе нужно найти ответ: {docs_context}
 
-Фрагмент документации: Для настройки мониторинга производительности необходимо выполнить следующие шаги...
+    Начнем.
 
-Ответ: Чтобы настроить мониторинг производительности, необходимо выполнить следующие шаги..."""
+    Вопрос пользователя: {question}
 
-    QUESTION_PROMPT_TEMPLATE: str = """Пожалуйста, помоги формализовать следующий вопрос: {question}. Сделай его более четким и лаконичным.
+    Ответ:
+    """
 
-Пример использования:
-Вопрос пользователя: Здравствуйте! Можно уточнить причины Правил https://rutube.ru/info/taboo_agreement/ по которым удаляются ролики? что за нарушение правил RUTUBE.
+    QUESTION_PROMPT_TEMPLATE: str = """Пожалуйста, помоги формализовать следующий вопросы пользователей.
+    Сделай его более четким и лаконичным.
 
-Ответ:
-По какой причине могут удалить ролик на RUTUBE?
-"""
+    Начнем.
+
+    Вопрос пользователя: {question}
+
+    Ответ:
+    """
