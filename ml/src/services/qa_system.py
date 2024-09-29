@@ -99,9 +99,12 @@ def gemma_inference(info, tokenizer, model):
     question = info["question"]
     docs_context = info["docs_context"]
 
-    prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
+    # prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
+    prompt = f"Вопрос: {question}\nКонтекст: {docs_context}\nОтвет:"
+    print("PROMPT:", prompt, end="\n\n")
     # message = {"role": "user", "content": prompt}
     encoded_input = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to("cuda")
+    print("ENCODE_INPUT:", encoded_input, end="\n\n")
 
     output = model.generate(
         input_ids=encoded_input["input_ids"],
@@ -111,8 +114,10 @@ def gemma_inference(info, tokenizer, model):
         top_k=50,
         top_p=0.95,
     )
+    print("OUTPUT:", output, end="\n\n")
 
     decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
+    print("DECODE_OUTPUT:", decoded_output, end="\n\n")
     
     info["result"] = decoded_output
     return decoded_output

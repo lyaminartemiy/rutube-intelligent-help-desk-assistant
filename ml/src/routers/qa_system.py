@@ -45,17 +45,17 @@ async def predict_sentiment(
         (item[0], float(item[1])) for item in qa_response.get("reranker_result", "")
     ]
 
-    print("ANSWER:", answer)
-    print("METADATA:", docs_metadata)
-    print("VECTOR DATABASE RESULT:", vector_database_result)
-    print("RERANKER RESULT:", reranker_result)
+    # print("ANSWER:", answer)
+    # print("METADATA:", docs_metadata)
+    # print("VECTOR DATABASE RESULT:", vector_database_result)
+    # print("RERANKER RESULT:", reranker_result)
 
     response = dict(
         answer=answer,
-        class_1=docs_metadata.get("class_1", ""),
-        class_2=docs_metadata.get("class_2", ""),
+        # class_1=docs_metadata.get("class_1", ""),
+        # class_2=docs_metadata.get("class_2", ""),
 
-        vector_database_result=vector_database_result,
-        reranker_result=reranker_result,
+        # vector_database_result=vector_database_result,
+        # reranker_result=reranker_result,
     )
     return response
