@@ -1,111 +1,133 @@
-import pandas as pd
-import numpy as np
-from loguru import logger
 import contextlib
 import os
-import sys
 import shutil
+import sys
 
 import fastapi
-
+import pandas as pd
 import torch
-from config.config import ModelsConfig, PromptConfig, QASystemConfig
+
+from config.config import ModelsConfig, QASystemConfig
 from dotenv import load_dotenv
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema.output_parser import StrOutputParser
 from langchain_chroma import Chroma
 from sentence_transformers import CrossEncoder
-from transformers import pipeline
-from utils.embeddings import generate_embeddings, CustomEmbeddings
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from utils.embeddings import CustomEmbeddings, generate_embeddings
 
 __import__("sqlite3")
 
 
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-
 @contextlib.asynccontextmanager
 async def lifespan(app: fastapi.FastAPI):
-    # app.state.tokenizer = AutoTokenizer.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME, use_fast=False)
-    # app.state.model = AutoModelForCausalLM.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME, device_map="sequential")
-    app.state.tokenizer = AutoTokenizer.from_pretrained("Vikhrmodels/Vikhr-Nemo-12B-Instruct-R-21-09-24", use_fast=False)
+    """
+    FastAPI lifecycle event to load models and data into memory.
+
+    The state of the app is populated with the following:
+        - `tokenizer`: `AutoTokenizer` instance for the language model.
+        - `model`: `AutoModelForCausalLM` instance for the language model.
+        - `cross_encoder`: `CrossEncoder` instance for the cross-encoder.
+        - `embeddings_model`: `CustomEmbeddings` instance for generating embeddings.
+        - `docs_retriever`: `Chroma` instance for retrieving documents.
+    """
+    # Load the language model and cross-encoder
+    app.state.tokenizer = AutoTokenizer.from_pretrained(
+        ModelsConfig.LLM_MODEL_NAME, use_fast=False
+    )
     app.state.model = AutoModelForCausalLM.from_pretrained(
-        "Vikhrmodels/Vikhr-Nemo-12B-Instruct-R-21-09-24",
+        ModelsConfig.LLM_MODEL_NAME,
         device_map="sequential",
         torch_dtype=torch.float16,
     )
-    logger.info("Gemma model and tokenizer loaded")
 
     app.state.cross_encoder = CrossEncoder(
         model_name=ModelsConfig.CROSS_ENCODER_NAME,
         max_length=ModelsConfig.CROSS_ENCODER_MAX_LENGTH,
         device=ModelsConfig.CROSS_ENCODER_DEVICE,
     )
-    logger.info("Cross-encoder created")
 
+    # Load environments parameters
     load_dotenv()
-    logger.info("Environment variables loaded")
 
     sys.modules["sqlite3"] = sys.modules.pop("sqlite3")
 
-    embeddings_model = CustomEmbeddings(model_name="intfloat/multilingual-e5-base")
+    # Load the embeddings model
+    embeddings_model = CustomEmbeddings(model_name=ModelsConfig.EMBEDDING_MODEL_NAME)
     app.state.embeddings_model = embeddings_model
-    logger.info("Embeddings model loaded")
 
-    app.state.answer_prompt_template = ChatPromptTemplate.from_template(
-        PromptConfig.ANSWER_PROMPT_TEMPLATE
-    )
-    app.state.question_prompt_template = ChatPromptTemplate.from_template(
-        PromptConfig.QUESTION_PROMPT_TEMPLATE
-    )
-    logger.info("Prompt created")
-
+    # Initialize the Chroma retriever
     shutil.rmtree(os.getenv("CHROMA_DB"))
     app.state.docs_retriever = Chroma(
         persist_directory=os.getenv("CHROMA_DB"),
         embedding_function=embeddings_model,
     ).as_retriever(search_kwargs={"k": QASystemConfig.CHROMA_CANDIDATES_COUNT})
-    logger.info("Chroma created")
 
+    # Generate embeddings for the documents
     source_faq = pd.read_parquet(os.getenv("RUTUBE_DOCUMENTS_PATH"))
-    logger.info("Source data loaded")
-
     generate_embeddings(embeddings_model=embeddings_model, source_faq=source_faq)
-    logger.info("Embeddings generated")
-
-    app.state.output_parser = StrOutputParser()
-    logger.info("Output parser created")
 
     yield
 
 
 def get_embeddings_model(request: fastapi.Request) -> CustomEmbeddings:
+    """
+    Get the embeddings model from the request's app state.
+
+    Args:
+    - request (fastapi.Request): The request containing the app state.
+
+    Returns:
+    - CustomEmbeddings: The embeddings model.
+    """
     return request.app.state.embeddings_model
 
 
-def get_question_prompt_template(request: fastapi.Request) -> ChatPromptTemplate:
-    return request.app.state.question_prompt_template
-
-
-def get_answer_prompt_template(request: fastapi.Request) -> ChatPromptTemplate:
-    return request.app.state.answer_prompt_template
-
-
 def get_docs_retriever(request: fastapi.Request) -> Chroma:
+    """
+    Get the document retriever from the request's app state.
+
+    Args:
+    - request (fastapi.Request): The request containing the app state.
+
+    Returns:
+    - Chroma: The document retriever.
+    """
     return request.app.state.docs_retriever
 
 
 def get_cross_encoder(request: fastapi.Request) -> CrossEncoder:
+    """
+    Get the cross encoder from the request's app state.
+
+    Args:
+    - request (fastapi.Request): The request containing the app state.
+
+    Returns:
+    - CrossEncoder: The cross encoder.
+    """
     return request.app.state.cross_encoder
 
 
-def get_output_parser(request: fastapi.Request) -> StrOutputParser:
-    return request.app.state.output_parser
+def get_llm_model(request: fastapi.Request) -> AutoModelForCausalLM:
+    """
+    Get the large language model from the request's app state.
 
+    Args:
+    - request (fastapi.Request): The request containing the app state.
 
-def get_gemma_model(request: fastapi.Request) -> AutoModelForCausalLM:
+    Returns:
+    - AutoModelForCausalLM: The large language model.
+    """
     return request.app.state.model
 
 
-def get_gemma_tokenizer(request: fastapi.Request) -> AutoTokenizer:
+def get_llm_tokenizer(request: fastapi.Request) -> AutoTokenizer:
+    """
+    Get the large language model's tokenizer from the request's app state.
+
+    Args:
+    - request (fastapi.Request): The request containing the app state.
+
+    Returns:
+    - AutoTokenizer: The tokenizer for the large language model.
+    """
     return request.app.state.tokenizer
