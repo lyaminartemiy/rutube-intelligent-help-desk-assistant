@@ -52,10 +52,10 @@ async def predict_sentiment(
 
     response = dict(
         answer=answer,
-        # class_1=docs_metadata.get("class_1", ""),
-        # class_2=docs_metadata.get("class_2", ""),
+        class_1=docs_metadata.get("class_1", ""),
+        class_2=docs_metadata.get("class_2", ""),
 
-        # vector_database_result=vector_database_result,
-        # reranker_result=reranker_result,
+        vector_database_result=vector_database_result,
+        reranker_result=reranker_result,
     )
     return response

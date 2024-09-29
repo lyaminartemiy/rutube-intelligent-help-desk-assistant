@@ -102,10 +102,10 @@ def gemma_inference(info, tokenizer: AutoTokenizer, model: AutoModelForCausalLM)
     prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
     # prompt = "Привет, как у тебя дела? Расскажи о себе"
     # prompt = f"Вопрос: {question}\nКонтекст: {docs_context}\nОтвет:"
-    print("PROMPT:", prompt, end="\n\n")
+    # print("PROMPT:", prompt, end="\n\n")
     # message = {"role": "user", "content": prompt}
     encoded_input = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to("cuda")
-    print("ENCODE_INPUT:", encoded_input, end="\n\n")
+    # print("ENCODE_INPUT:", encoded_input, end="\n\n")
 
     output = model.generate(
         input_ids=encoded_input["input_ids"],
@@ -115,10 +115,10 @@ def gemma_inference(info, tokenizer: AutoTokenizer, model: AutoModelForCausalLM)
         top_k=30,
         # top_p=0.95,
     )
-    print("OUTPUT:", output, end="\n\n")
+    # print("OUTPUT:", output, end="\n\n")
 
     decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
-    print("DECODE_OUTPUT:", decoded_output, end="\n\n")
+    # print("DECODE_OUTPUT:", decoded_output, end="\n\n")
     
     info["result"] = decoded_output
 

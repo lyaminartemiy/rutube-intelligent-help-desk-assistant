@@ -7,15 +7,15 @@ from sentence_transformers import CrossEncoder
 #             info[k] = v[0][0]
 #     return info
 
-def get_top_k(k, rank_result, docs, metadata):
-    docs_top_k, metadata_top_k = [], []
+def get_top_k(k, rank_result, docs):
+    docs_top_k, ids = [], []
     for i in range(k):
         doc = rank_result[i]
         doc_id = doc["corpus_id"]
         doc_score = doc["score"]
         docs_top_k.append((docs[doc_id], doc_score))
-        metadata_top_k.append(metadata[doc_id])
-    return docs_top_k, metadata_top_k
+        ids.append(doc_id)
+    return docs_top_k, ids
 
 
 def rerank_documents(
@@ -25,16 +25,18 @@ def rerank_documents(
 
     docs_context = [doc.page_content for doc in info["docs_context"]]
     docs_metadata = [f"{doc.metadata['question']}: {doc.metadata['answer']}" for doc in info["docs_context"]]
+    docs_classes = [doc.metadata for doc in info["docs_context"]]
 
     # print("\nВходной вопрос:", question)
     docs_rank_result = cross_encoder.rank(question, docs_context)
     # print("Результаты ранжирования:", docs_rank_result)
-    docs_res, meta_res = get_top_k(k, docs_rank_result, docs_context, docs_metadata)
+    docs_res, ids = get_top_k(k, docs_rank_result, docs_context)
     
     info["vector_database_result"] = docs_context
     info["reranker_result"] = docs_res
     # print("Результаты получения топ-К:")
     # for i, doc in enumerate(docs_res):
     #     print(f"Вопрос топ-{i}", doc, "ответ на вопрос: ", docs_metadata[i])
-    info["docs_context"] = meta_res
+    info["docs_context"] = [docs_metadata[id] for id in ids]
+    info["docs_metadata"] = docs_classes[ids[0]]
     return info
