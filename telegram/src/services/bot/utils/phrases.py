@@ -1,4 +1,21 @@
 class Phrase:
+    """
+    Phrases for the bot.
+
+    Attributes:
+        START (str): The welcome message.
+        HELP (str): The help message.
+        NEW_REPORT (str): The message for starting a new report.
+        ANSWER_ASSESMENT (str): The message for assessing the answer.
+        POSITIVE_FEEDBACK (str): The positive feedback message.
+        NEGATIVE_FEEDBACK (str): The negative feedback message.
+        POSITIVE_ANSWER (str): The message for a positive answer.
+        NEGATIVE_ANSWER (str): The message for a negative answer.
+        NO_REPONSE (str): The message when the bot does not understand the user.
+        DISPATCHER_WAITING (str): The message when the user is waiting for a dispatcher.
+        DISPATCHER_FINISH (str): The message when the session with the dispatcher is finished.
+    """
+
     START = """Добро пожаловать в поддержку RUTUBE!
 
 Позвольте представить нашего интеллектуального помощника — вашего личного гида, который работает 24/7. Теперь все ваши вопросы решаются всего за несколько кликов.
