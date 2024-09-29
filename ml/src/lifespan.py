@@ -28,10 +28,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 async def lifespan(app: fastapi.FastAPI):
     # app.state.tokenizer = AutoTokenizer.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME, use_fast=False)
     # app.state.model = AutoModelForCausalLM.from_pretrained(ModelsConfig.GEMMA_MODEL_NAME, device_map="sequential")
-    app.state.tokenizer = AutoTokenizer.from_pretrained("ai-forever/ruGPT-3.5-13B")
+    app.state.tokenizer = AutoTokenizer.from_pretrained("ai-forever/ruGPT-3.5-13B", use_fast=False)
     app.state.model = AutoModelForCausalLM.from_pretrained(
         "ai-forever/ruGPT-3.5-13B",
-        device_map="cuda",
+        device_map="sequential",
         torch_dtype=torch.float16,
     )
     logger.info("Gemma model and tokenizer loaded")
