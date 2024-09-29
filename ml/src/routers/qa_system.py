@@ -38,7 +38,7 @@ async def predict_sentiment(
         output_parser=output_parser,
     )
     answer = qa_response.get("result", "")
-    docs_metadata = qa_response.get("docs_metadata", [None])[0]
+    docs_metadata = qa_response.get("docs_metadata", None)
     
     vector_database_result = qa_response.get("vector_database_result", "")
     reranker_result = [
