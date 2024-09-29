@@ -99,8 +99,8 @@ def gemma_inference(info, tokenizer, model):
     question = info["question"]
     docs_context = info["docs_context"]
 
-    # prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
-    prompt = "Привет, как у тебя дела? Расскажи о себе"
+    prompt = PromptConfig.ANSWER_PROMPT_TEMPLATE.format(question=question, docs_context=docs_context)
+    # prompt = "Привет, как у тебя дела? Расскажи о себе"
     # prompt = f"Вопрос: {question}\nКонтекст: {docs_context}\nОтвет:"
     print("PROMPT:", prompt, end="\n\n")
     # message = {"role": "user", "content": prompt}
